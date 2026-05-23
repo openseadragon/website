@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-accent="aqua" data-frame="art">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OSD — Deep zoom for the web</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script>try{var t=localStorage.getItem('osd-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+  <!-- OpenSeadragon (real, live in the hero) -->
+  <script src="https://cdn.jsdelivr.net/npm/openseadragon@6.0.2/build/openseadragon/openseadragon.min.js"></script>
+  <!-- anime.js for stagger reveals, count-ups, scroll-triggered transitions -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <!-- React for the tweaks panel only -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- ============================================================
+       NAV
+       ============================================================ -->
+  <nav class="nav" data-screen-label="01 Nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true"><svg class="brand-glyph" viewBox="0 0 24 24" fill="none"><rect class="bg-outer" x="3" y="3" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linejoin="round" rx="1.5"/><rect class="bg-inner" x="8" y="8" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-opacity="0.55" rx="1.5"/><rect class="bg-dot" x="11" y="11" width="3" height="3" fill="currentColor"/></svg></span>
+        <span>OpenSeadragon</span>
+        <span class="mono" style="font-size:11px;color:var(--paper-mute);margin-left:6px;">v6.0.2</span>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" aria-current="page" href="index.html">Home</a>
+        <a class="nav-link" href="docs.html">Docs</a>
+        <a class="nav-link" href="examples.html">Examples</a>
+        <a class="nav-link" href="plugins.html">Plugins</a>
+        <a class="nav-link" href="community.html">Community</a>
+      </div>
+      <div class="nav-spacer"></div>
+      <button class="nav-search" aria-label="Search docs">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search the docs</span>
+        <span class="kbd">⌘ K</span>
+      </button>
+      <a href="#" class="gh-pill" aria-label="GitHub">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.55v-2.06c-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.07 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.6.23 2.78.11 3.07.74.81 1.19 1.83 1.19 3.09 0 4.43-2.69 5.4-5.25 5.68.41.36.78 1.07.78 2.16v3.2c0 .31.21.66.8.55C20.21 21.38 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5Z"/></svg>
+        <span>3.4k</span>
+        <span class="star">★</span>
+      </a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <svg class="ic-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="ic-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <header class="hero" data-screen-label="02 Hero">
+    <!-- ambient tile-loading particle field -->
+    <canvas id="tile-particles" class="tile-particles" aria-hidden="true"></canvas>
+    <!-- cursor spotlight: radial accent that tracks the mouse -->
+    <div class="cursor-spot" id="cursor-spot" aria-hidden="true"></div>
+    <!-- decorative wireframe grid behind hero copy -->
+    <svg class="hero-wires" aria-hidden="true" viewBox="0 0 1280 720" preserveAspectRatio="none">
+      <defs>
+        <pattern id="wires-grid" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+          <path d="M 80 0 L 0 0 0 80" fill="none" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.18"/>
+        </pattern>
+      </defs>
+      <rect width="1280" height="720" fill="url(#wires-grid)"/>
+      <g class="wires-marks" stroke="currentColor" stroke-width="0.6" fill="none" stroke-opacity="0.5">
+        <circle cx="200" cy="180" r="36" stroke-dasharray="2 4"/>
+        <circle cx="200" cy="180" r="3" fill="currentColor"/>
+        <path d="M200 144 L200 100 M200 216 L200 260 M164 180 L120 180 M236 180 L280 180"/>
+        <path d="M1040 540 l40 0 l0 -40" stroke-dasharray="3 3"/>
+        <path d="M1100 100 l60 0 l0 60" stroke-dasharray="3 3"/>
+      </g>
+    </svg>
+
+    <div class="container">
+      <div class="eyebrow"><span class="dot"></span> v6.0.2 just shipped · MIT open source · zero dependencies</div>
+
+      <div class="hero-grid" style="margin-top: 28px;">
+        <div class="hero-copy">
+          <h1 class="h-display">
+            Deep zoom for<br/>
+            <em>massive</em> images.
+          </h1>
+          <p class="lede">
+            A JavaScript viewer for high-resolution tiled images — maps, microscopy,
+            manuscripts, anything that doesn't fit on a screen. Smooth at any scale.
+            Yours to extend.
+          </p>
+          <div class="hero-cta">
+            <a href="docs.html" class="btn btn-primary">
+              Get started
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+            <span class="copy-snippet">
+              <span class="muted">$</span>
+              <code>npm install openseadragon</code>
+              <button class="copy-btn" data-copy="npm install openseadragon" aria-label="Copy command">
+                <svg class="ic-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+                <svg class="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4.5 4.5L19 6.5"/></svg>
+              </button>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== INTERACTIVE STAGE ===== -->
+      <div class="hero-stage" id="hero-stage">
+        <div class="stage-chrome">
+          <div class="stage-dots"><span></span><span></span><span></span></div>
+          <span>viewer.html — <span style="color:var(--paper-dim);">live</span></span>
+          <div class="stage-meta">
+            <span><b id="src-name">Van Gogh · The Starry Night</b></span>
+            <span>tiles loaded: <b id="tile-count">—</b></span>
+            <span>zoom: <b id="zoom-readout">1.00×</b></span>
+          </div>
+        </div>
+
+        <div class="viewer-shell">
+          <div id="osd-hero" class="osd-mount"></div>
+
+          <!-- wireframe overlay: animates in on first load, then fades -->
+          <svg class="viewer-wires" id="viewer-wires" aria-hidden="true" viewBox="0 0 800 450" preserveAspectRatio="none">
+            <g stroke="currentColor" fill="none" stroke-width="0.6" vector-effect="non-scaling-stroke">
+              <!-- tile-pyramid grid -->
+              <path d="M0 56 H800 M0 112 H800 M0 168 H800 M0 225 H800 M0 281 H800 M0 337 H800 M0 393 H800" class="wire-line"/>
+              <path d="M100 0 V450 M200 0 V450 M300 0 V450 M400 0 V450 M500 0 V450 M600 0 V450 M700 0 V450" class="wire-line"/>
+              <!-- focused tile -->
+              <rect x="300" y="168" width="200" height="113" stroke-width="1.2" class="wire-focus"/>
+              <!-- crosshair -->
+              <path d="M400 168 V281 M300 225 H500" stroke-dasharray="2 4" class="wire-cross"/>
+              <circle cx="400" cy="225" r="5" class="wire-dot" fill="currentColor"/>
+              <!-- corner ticks -->
+              <path d="M20 20 H50 M20 20 V50 M780 20 H750 M780 20 V50 M20 430 H50 M20 430 V400 M780 430 H750 M780 430 V400" stroke-width="1" class="wire-ticks"/>
+            </g>
+            <g class="wire-labels" font-family="ui-monospace, monospace" font-size="9" fill="currentColor" opacity="0.7">
+              <text x="28" y="34">L8 · 256²</text>
+              <text x="700" y="34" text-anchor="end">3556 × 4800</text>
+              <text x="28" y="424">tiles cached 0/—</text>
+              <text x="700" y="424" text-anchor="end">zoom 1.00×</text>
+            </g>
+          </svg>
+
+          <!-- periodic scanline sweep -->
+          <div class="scanline" aria-hidden="true"></div>
+
+          <div class="viewer-overlay">
+            <div class="ovl-tl">
+              <span class="chip"><span class="dot"></span>LIVE · drag, scroll, pinch</span>
+            </div>
+
+            <div class="ovl-cr" style="width: 48px; height: 196px">
+              <div class="zoom-controls" aria-label="Zoom controls" style="width: 48px; border-width: 1px; justify-content: flex-start">
+                <button class="zc-btn zc-pri" id="zoom-in" aria-label="Zoom in">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+                <div class="zc-rail-wrap" aria-hidden="true">
+                  <div class="zc-rail" id="zc-rail">
+                    <span class="zc-tick"></span>
+                    <span class="zc-tick"></span>
+                    <span class="zc-tick"></span>
+                    <span class="zc-tick"></span>
+                    <span class="zc-tick"></span>
+                    <span class="zc-fill" id="zc-fill"></span>
+                    <span class="zc-thumb" id="zc-thumb" tabindex="0" role="slider" aria-label="Zoom level" aria-valuemin="1" aria-valuemax="10" aria-valuenow="1">
+                      <span class="zc-thumb-label" id="zc-thumb-label">1.0×</span>
+                    </span>
+                  </div>
+                </div>
+                <button class="zc-btn zc-pri" id="zoom-out" aria-label="Zoom out">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/></svg>
+                </button>
+                <div class="zc-utils">
+                  <button class="zc-btn zc-sec" id="zoom-home" aria-label="Reset view">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                      <rect x="5" y="5" width="14" height="14" rx="2"/>
+                      <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/>
+                    </svg>
+                  </button>
+                  <button class="zc-btn zc-sec" id="zoom-full" aria-label="Full screen">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9V5h4M19 9V5h-4M5 15v4h4M19 15v4h-4"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="ovl-bl">
+              <div class="scale-bar">
+                <span>200 px</span>
+                <span class="bar"></span>
+              </div>
+            </div>
+
+            <div class="ovl-bc">
+              <span class="chip" id="hint-chip">SCROLL TO ZOOM · DOUBLE-CLICK TO DIVE</span>
+            </div>
+
+            <div class="ovl-br">
+              <div class="navigator-mini">
+                <span class="nav-label">Navigator</span>
+                <div id="osd-hero-navigator"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- meta strip -->
+        <div class="container" style="padding-bottom: 28px; padding-top: 22px;">
+          <div class="hero-strip">
+            <div>
+              SOURCE<br/><b id="strip-source">3,556 × 4,800 px JPEG</b>
+            </div>
+            <div>
+              TILES<br/><b>256×256 deep-zoom pyramid</b>
+            </div>
+            <div>
+              MEMORY<br/><b>only visible tiles in RAM</b>
+            </div>
+            <div>
+              RENDERER<br/><b>canvas2d · webgl optional</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       USE CASES
+       ============================================================ -->
+  <section class="section" data-screen-label="03 Use cases">
+    <div class="container">
+      <div class="section-head">
+        <div class="left">
+          <span class="eyebrow"><span class="dot"></span>BUILT FOR</span>
+          <h2 class="h-section">Wherever an image is too big to fit on screen.</h2>
+        </div>
+        <div class="right"><a href="examples.html">See more in the gallery →</a></div>
+      </div>
+
+      <div class="cases">
+        <article class="case-card" data-case-theme="art">
+          <div class="case-image">
+            <div class="case-osd" id="osd-case-art" data-theme="art"></div>
+            <div class="case-osd-frame" aria-hidden="true">
+              <span class="corner tl"></span><span class="corner tr"></span>
+              <span class="corner bl"></span><span class="corner br"></span>
+            </div>
+            <div class="case-chip">
+              <span class="dot live"></span> LIVE · auto-touring
+            </div>
+          </div>
+          <div class="case-body">
+            <span class="num">01 / Museums & archives</span>
+            <h3 class="h-card">Read every brushstroke.</h3>
+            <p>Power deep-zoom galleries for paintings, manuscripts, maps and rare-book collections.
+              IIIF-native, multi-image friendly.</p>
+          </div>
+        </article>
+
+        <article class="case-card" data-case-theme="micro">
+          <div class="case-image">
+            <div class="case-osd" id="osd-case-micro" data-theme="micro"></div>
+            <div class="case-osd-frame" aria-hidden="true">
+              <span class="corner tl"></span><span class="corner tr"></span>
+              <span class="corner bl"></span><span class="corner br"></span>
+            </div>
+            <div class="case-chip">
+              <span class="dot live"></span> LIVE · auto-touring
+            </div>
+          </div>
+          <div class="case-body">
+            <span class="num">02 / Medical & microscopy</span>
+            <h3 class="h-card">Cell to slide, in one gesture.</h3>
+            <p>Render whole-slide pathology, electron microscopy, and astronomical
+              composites with annotation overlays and measurements.</p>
+          </div>
+        </article>
+
+        <article class="case-card" data-case-theme="maps">
+          <div class="case-image">
+            <div class="case-osd" id="osd-case-maps" data-theme="maps"></div>
+            <div class="case-osd-frame" aria-hidden="true">
+              <span class="corner tl"></span><span class="corner tr"></span>
+              <span class="corner bl"></span><span class="corner br"></span>
+            </div>
+            <div class="case-chip">
+              <span class="dot live"></span> LIVE · auto-touring
+            </div>
+          </div>
+          <div class="case-body">
+            <span class="num">03 / Maps & geospatial</span>
+            <h3 class="h-card">Custom tile sources, your way.</h3>
+            <p>Bring your own DZI, IIIF, Zoomify, or write a TileSource in 20 lines.
+              Overlay anything in pixel or image coordinates.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       INSTITUTIONS MARQUEE — "trusted by"
+       ============================================================ -->
+  <section class="marquee-wrap" data-screen-label="03b Trusted by" aria-label="Trusted by">
+    <div class="marquee-label">
+      <span class="eyebrow"><span class="dot"></span>IN PRODUCTION AT</span>
+    </div>
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Smithsonian</span><span class="sep">·</span>
+        <span>British Library</span><span class="sep">·</span>
+        <span>National Gallery</span><span class="sep">·</span>
+        <span>NASA JPL</span><span class="sep">·</span>
+        <span>e-codices</span><span class="sep">·</span>
+        <span>Rijksmuseum</span><span class="sep">·</span>
+        <span>Library of Congress</span><span class="sep">·</span>
+        <span>Bodleian</span><span class="sep">·</span>
+        <span>OpenSlide</span><span class="sep">·</span>
+        <span>Cambridge Digital</span><span class="sep">·</span>
+        <span>Wellcome Collection</span><span class="sep">·</span>
+        <span>The Met</span><span class="sep">·</span>
+        <span>Vatican Library</span><span class="sep">·</span>
+        <span>Internet Archive</span><span class="sep">·</span>
+        <!-- duplicate for seamless loop -->
+        <span>Smithsonian</span><span class="sep">·</span>
+        <span>British Library</span><span class="sep">·</span>
+        <span>National Gallery</span><span class="sep">·</span>
+        <span>NASA JPL</span><span class="sep">·</span>
+        <span>e-codices</span><span class="sep">·</span>
+        <span>Rijksmuseum</span><span class="sep">·</span>
+        <span>Library of Congress</span><span class="sep">·</span>
+        <span>Bodleian</span><span class="sep">·</span>
+        <span>OpenSlide</span><span class="sep">·</span>
+        <span>Cambridge Digital</span><span class="sep">·</span>
+        <span>Wellcome Collection</span><span class="sep">·</span>
+        <span>The Met</span><span class="sep">·</span>
+        <span>Vatican Library</span><span class="sep">·</span>
+        <span>Internet Archive</span><span class="sep">·</span>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight" data-screen-label="04 Features">
+    <div class="container">
+      <div class="section-head">
+        <div class="left">
+          <span class="eyebrow"><span class="dot"></span>BUILT IN</span>
+          <h2 class="h-section">Sixteen years of details, ready out of the box.</h2>
+          <p class="sub">No gradient compromises. No "but only if you also load…". The full set, tested
+            across every browser that matters.</p>
+        </div>
+      </div>
+
+      <div class="features">
+        <!-- 1 -->
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="4" y="4" width="10" height="10"/><rect x="18" y="4" width="10" height="10"/>
+            <rect x="4" y="18" width="10" height="10"/><rect x="18" y="18" width="10" height="10"/>
+          </svg>
+          <h4>Tile sources</h4>
+          <p>DZI, IIIF, OSM-style, Zoomify, Legacy, or your own subclass.
+             Multi-resolution pyramids load on demand.</p>
+        </div>
+        <!-- 2 -->
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="3" fill="currentColor"/>
+            <path d="M16 2v6M16 24v6M2 16h6M24 16h6"/>
+          </svg>
+          <h4>Overlays</h4>
+          <p>Anchor DOM, SVG, or canvas elements in image coordinates.
+             They track the user's pan, zoom and rotation perfectly.</p>
+        </div>
+        <!-- 3 -->
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="26" height="20" rx="2"/>
+            <rect x="18" y="14" width="8" height="6" fill="currentColor" stroke="none" opacity=".25"/>
+            <rect x="18" y="14" width="8" height="6"/>
+          </svg>
+          <h4>Navigator</h4>
+          <p>A minimap that mirrors the main view. Configurable, draggable,
+             and aware of multi-image worlds.</p>
+        </div>
+        <!-- 4 -->
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M25 12a10 10 0 1 1-3-7"/><path d="M25 4v8h-8"/>
+          </svg>
+          <h4>Rotation</h4>
+          <p>Free rotation by degree, with flip and constrained-axis modes.
+             Animates with the same easing the viewport uses.</p>
+        </div>
+        <!-- 5 -->
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="6" width="18" height="14"/><rect x="11" y="12" width="18" height="14"/>
+          </svg>
+          <h4>Multi-image</h4>
+          <p>Tile any number of images in one world. Compose collections,
+             stitch composites, or wire sequence-mode for slideshows.</p>
+        </div>
+        <!-- 6 -->
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M6 6h10v10H6zM16 16h10v10H16z"/>
+            <path d="M16 6l10 10M6 16l10 10" opacity=".4"/>
+          </svg>
+          <h4>Plugin ecosystem</h4>
+          <p>Filters, annotations, scalebar, screenshots, fabric.js,
+             SVG overlay, GeoJSON — drop them in.</p>
+        </div>
+        <!-- 7 -->
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M4 22V8l8 5 8-9 8 11"/><path d="M4 26h24"/>
+          </svg>
+          <h4>WebGL drawer</h4>
+          <p>Opt-in WebGL rendering for smoother filters, blend modes,
+             and large compositions on capable hardware.</p>
+        </div>
+        <!-- 8 -->
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="9" y="3" width="14" height="26" rx="3"/>
+            <circle cx="16" cy="25" r="1" fill="currentColor"/>
+          </svg>
+          <h4>Mobile gestures</h4>
+          <p>Pinch, double-tap, two-finger pan, momentum. Tuned for
+             touch first; keyboard-accessible second.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CODE + LIVE
+       ============================================================ -->
+  <section class="section-tight" data-screen-label="05 Code">
+    <div class="container">
+      <div class="section-head">
+        <div class="left">
+          <span class="eyebrow"><span class="dot"></span>SIX LINES</span>
+          <h2 class="h-section">Same code as the demo on the right.</h2>
+          <p class="sub">Drop one element. Point at a tile source. You're done.
+            Everything else is opt-in.</p>
+        </div>
+      </div>
+
+      <div class="split">
+        <div class="codeblock">
+          <header>
+            <div class="stage-dots"><span></span><span></span><span></span></div>
+            <span class="fname">viewer.html</span>
+            <span style="margin-left:auto;">esm · 18 kB</span>
+          </header>
+          <pre><span class="tok-com">// 1. include the script</span>
+<span class="tok-pun">&lt;</span><span class="tok-fn">script</span> <span class="tok-key">src</span><span class="tok-pun">=</span><span class="tok-str">"openseadragon.min.js"</span><span class="tok-pun">&gt;&lt;/</span><span class="tok-fn">script</span><span class="tok-pun">&gt;</span>
+
+<span class="tok-com">// 2. drop a container</span>
+<span class="tok-pun">&lt;</span><span class="tok-fn">div</span> <span class="tok-key">id</span><span class="tok-pun">=</span><span class="tok-str">"viewer"</span> <span class="tok-key">style</span><span class="tok-pun">=</span><span class="tok-str">"width:100%; height:600px"</span><span class="tok-pun">&gt;&lt;/</span><span class="tok-fn">div</span><span class="tok-pun">&gt;</span>
+
+<span class="tok-com">// 3. point at a tile source</span>
+<span class="tok-key">const</span> viewer <span class="tok-pun">=</span> <span class="tok-fn">OpenSeadragon</span><span class="tok-pun">({</span>
+  <span class="tok-key">id</span>: <span class="tok-str">"viewer"</span>,
+  <span class="tok-key">tileSources</span>: <span class="tok-str">"/tiles/painting.dzi"</span>,
+  <span class="tok-key">showNavigator</span>: <span class="tok-num">true</span>,
+  <span class="tok-key">zoomPerScroll</span>: <span class="tok-num">1.4</span>
+<span class="tok-pun">});</span></pre>
+        </div>
+
+        <div class="live-stage">
+          <div id="osd-secondary" class="osd-mount"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       EXAMPLES
+       ============================================================ -->
+  <section class="section-tight" id="examples" data-screen-label="06 Examples">
+    <div class="container">
+      <div class="section-head">
+        <div class="left">
+          <span class="eyebrow"><span class="dot"></span>EXAMPLES</span>
+          <h2 class="h-section">Hover. Watch each card zoom into itself.</h2>
+          <p class="sub">A live catalog of patterns — every example is a working
+            HTML page with annotated source.</p>
+        </div>
+        <div class="right"><a href="examples.html">All 38 examples →</a></div>
+      </div>
+
+      <div class="examples-grid" id="examples-grid">
+        <!-- generated by JS so we can compose 6 tones programmatically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PLUGIN ECOSYSTEM
+       ============================================================ -->
+  <section class="section-tight" id="plugins" data-screen-label="07 Plugins">
+    <div class="container">
+      <div class="section-head">
+        <div class="left">
+          <span class="eyebrow"><span class="dot"></span>EXTEND</span>
+          <h2 class="h-section">A plugin for almost anything.</h2>
+          <p class="sub">Filters, annotations, screenshots, scalebars, SVG overlays,
+            fabric.js, GeoJSON, image-comparison sliders — community-built and battle-tested.</p>
+        </div>
+        <div class="right"><a href="plugins.html">Browse all plugins →</a></div>
+      </div>
+
+      <div class="plugins-map" id="plugins-map">
+        <canvas class="plugins-map-canvas" id="plugins-map-canvas" aria-hidden="true"></canvas>
+        <div class="pl-hub">
+          <span class="pl-hub-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="3" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linejoin="round" rx="1.5"/>
+              <rect x="8" y="8" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-opacity="0.55" rx="1.5"/>
+              <rect x="11" y="11" width="3" height="3" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="pl-hub-title">openseadragon</span>
+          <span class="pl-hub-sub">core viewer</span>
+        </div>
+        <a class="pl-node" href="#"><span class="pl-mark">An</span><span class="pl-name">Annotorious</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Sc</span><span class="pl-name">Scalebar</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Fa</span><span class="pl-name">Fabric overlay</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Sv</span><span class="pl-name">SVG overlay</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Sh</span><span class="pl-name">Screenshot</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Fi</span><span class="pl-name">Filtering</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Le</span><span class="pl-name">Leaflet bridge</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Ge</span><span class="pl-name">GeoJSON</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Cu</span><span class="pl-name">Curtain</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       COMMUNITY
+       ============================================================ -->
+  <section class="section-tight" id="community" data-screen-label="08 Community">
+    <div class="container">
+      <div class="section-head">
+        <div class="left">
+          <span class="eyebrow"><span class="dot"></span>COMMUNITY</span>
+          <h2 class="h-section">Active. Patient. Open.</h2>
+          <p class="sub">Sixteen years in, still maintained by the people who use it.</p>
+        </div>
+      </div>
+
+      <div class="community">
+        <a class="community-card" href="#">
+          <b>GitHub Discussions</b>
+          <p>Architecture questions, feature debate, and the long tail of release notes.</p>
+          <span class="more">github.com/openseadragon →</span>
+        </a>
+        <a class="community-card" href="#">
+          <b>Stack Overflow</b>
+          <p>1,400+ tagged questions. Common gotchas already answered.</p>
+          <span class="more">tag · openseadragon →</span>
+        </a>
+        <a class="community-card" href="#">
+          <b>Discord</b>
+          <p>Real-time chat with maintainers and users. IIIF interop, museum implementations, custom tile servers.</p>
+          <span class="more">join the server →</span>
+        </a>
+        <a class="community-card" href="#">
+          <b>Sponsor</b>
+          <p>Underwrite maintainer time. Logo on the homepage, gratitude in the changelog.</p>
+          <span class="more">open collective →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="foot" data-screen-label="09 Footer">
+    <div class="container">
+      <div class="foot-grid">
+        <div>
+          <a href="index.html" class="brand">
+            <span class="brand-mark" aria-hidden="true"><svg class="brand-glyph" viewBox="0 0 24 24" fill="none"><rect class="bg-outer" x="3" y="3" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linejoin="round" rx="1.5"/><rect class="bg-inner" x="8" y="8" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-opacity="0.55" rx="1.5"/><rect class="bg-dot" x="11" y="11" width="3" height="3" fill="currentColor"/></svg></span>
+            <span>OpenSeadragon</span>
+          </a>
+          <p class="muted" style="margin-top:16px;font-size:13px;max-width:34ch;">
+            An open-source, web-based viewer for high-resolution zoomable images.
+            BSD-3 licensed. No tracking. No npm-install drama.
+          </p>
+        </div>
+        <div>
+          <h5>Product</h5>
+          <ul>
+            <li><a href="docs.html">Docs</a></li>
+            <li><a href="examples.html">Examples</a></li>
+            <li><a href="plugins.html">Plugins</a></li>
+            <li><a href="docs.html#api">API reference</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Learn</h5>
+          <ul>
+            <li><a href="docs.html">Getting started</a></li>
+            <li><a href="#">Creating tiles</a></li>
+            <li><a href="#">Migration to v6</a></li>
+            <li><a href="#">Course</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Community</h5>
+          <ul>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Discussions</a></li>
+            <li><a href="#">Stack Overflow</a></li>
+            <li><a href="#">Sponsor</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="#">BSD-3 license</a></li>
+            <li><a href="#">Contributing</a></li>
+            <li><a href="#">Code of conduct</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2002–2026 · BSD-3-Clause</span>
+        <span>Made by people who like seeing the brushstrokes.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       SCRIPTS
+       ============================================================ -->
+  <script src="site.js"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="tweaks.jsx"></script>
+</body>
+</html>

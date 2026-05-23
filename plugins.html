@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-accent="aqua">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plugins — OpenSeadragon</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script>try{var t=localStorage.getItem('osd-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+  <script src="https://cdn.jsdelivr.net/npm/openseadragon@6.0.2/build/openseadragon/openseadragon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- NAV (shared) -->
+  <nav class="nav" data-screen-label="01 Nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true"><svg class="brand-glyph" viewBox="0 0 24 24" fill="none"><rect class="bg-outer" x="3" y="3" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linejoin="round" rx="1.5"/><rect class="bg-inner" x="8" y="8" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-opacity="0.55" rx="1.5"/><rect class="bg-dot" x="11" y="11" width="3" height="3" fill="currentColor"/></svg></span>
+        <span>OpenSeadragon</span>
+        <span class="mono" style="font-size:11px;color:var(--paper-mute);margin-left:6px;">v6.0.2</span>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="docs.html">Docs</a>
+        <a class="nav-link" href="examples.html">Examples</a>
+        <a class="nav-link" aria-current="page" href="plugins.html">Plugins</a>
+        <a class="nav-link" href="community.html">Community</a>
+      </div>
+      <div class="nav-spacer"></div>
+      <button class="nav-search" aria-label="Search docs">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search the docs</span>
+        <span class="kbd">⌘ K</span>
+      </button>
+      <a href="#" class="gh-pill" aria-label="GitHub">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.55v-2.06c-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.07 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.6.23 2.78.11 3.07.74.81 1.19 1.83 1.19 3.09 0 4.43-2.69 5.4-5.25 5.68.41.36.78 1.07.78 2.16v3.2c0 .31.21.66.8.55C20.21 21.38 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5Z"/></svg>
+        <span>3.4k</span>
+        <span class="star">★</span>
+      </a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <svg class="ic-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="ic-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="page-hero" data-screen-label="02 Hero">
+    <canvas id="tile-particles" class="tile-particles" aria-hidden="true"></canvas>
+    <div class="cursor-spot" id="cursor-spot" aria-hidden="true"></div>
+    <svg class="hero-wires" aria-hidden="true" viewBox="0 0 1280 480" preserveAspectRatio="none">
+      <defs>
+        <pattern id="phwires-grid" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+          <path d="M 80 0 L 0 0 0 80" fill="none" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.18"/>
+        </pattern>
+      </defs>
+      <rect width="1280" height="480" fill="url(#phwires-grid)"/>
+    </svg>
+    <div class="container">
+      <span class="eyebrow"><span class="dot"></span>EXTEND · COMMUNITY-MAINTAINED · BSD-3</span>
+      <h1 class="h-display" style="margin-top:18px;">A plugin for<br/><em>almost</em> anything.</h1>
+      <p class="lede" style="margin-top:20px;">Filters, annotations, screenshots, scalebars, SVG overlays, fabric.js,
+        GeoJSON, image-comparison sliders — community-built and battle-tested.
+        Drop them in and keep going.</p>
+
+      <div class="hero-stats">
+        <div><b id="stat-plugins">52</b><span>plugins</span></div>
+        <div><b id="stat-cats">9</b><span>categories</span></div>
+        <div><b id="stat-dl">9.2M</b><span>downloads / yr</span></div>
+        <div><b>BSD-3</b><span>open license</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MINDMAP -->
+  <section class="section-tight" data-screen-label="03 Mindmap">
+    <div class="container">
+      <div class="section-head">
+        <div class="left">
+          <span class="eyebrow"><span class="dot"></span>CORE + ORBIT</span>
+          <h2 class="h-section">One viewer. Many companions.</h2>
+          <p class="sub">Each plugin attaches to the running viewer at a well-defined seam —
+            tile source, overlay layer, drawer hook, or input chain.</p>
+        </div>
+      </div>
+
+      <div class="plugins-map" id="plugins-map">
+        <canvas class="plugins-map-canvas" id="plugins-map-canvas" aria-hidden="true"></canvas>
+        <div class="pl-hub">
+          <span class="pl-hub-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="3" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linejoin="round" rx="1.5"/>
+              <rect x="8" y="8" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-opacity="0.55" rx="1.5"/>
+              <rect x="11" y="11" width="3" height="3" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="pl-hub-title">openseadragon</span>
+          <span class="pl-hub-sub">core viewer</span>
+        </div>
+        <a class="pl-node" href="#"><span class="pl-mark">An</span><span class="pl-name">Annotorious</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Sc</span><span class="pl-name">Scalebar</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Fa</span><span class="pl-name">Fabric overlay</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Sv</span><span class="pl-name">SVG overlay</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Sh</span><span class="pl-name">Screenshot</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Fi</span><span class="pl-name">Filtering</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Le</span><span class="pl-name">Leaflet bridge</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Ge</span><span class="pl-name">GeoJSON</span></a>
+        <a class="pl-node" href="#"><span class="pl-mark">Cu</span><span class="pl-name">Curtain</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BROWSE BY CATEGORY -->
+  <section class="section-tight" data-screen-label="04 Browse" id="browse">
+    <div class="container">
+      <div class="section-head" style="margin-bottom: 24px;">
+        <div class="left">
+          <span class="eyebrow"><span class="dot"></span>BROWSE</span>
+          <h2 class="h-section">Find a plugin by what it does.</h2>
+        </div>
+      </div>
+      <div class="filter-pills" id="plugin-filters" role="tablist" aria-label="Plugin categories"></div>
+      <div class="plugin-grid" id="plugin-grid"></div>
+    </div>
+  </section>
+
+  <!-- BUILD YOUR OWN -->
+  <section class="section-tight" data-screen-label="05 Build">
+    <div class="container">
+      <div class="section-head">
+        <div class="left">
+          <span class="eyebrow"><span class="dot"></span>EXTEND IT YOURSELF</span>
+          <h2 class="h-section">Write your own in 60 lines.</h2>
+          <p class="sub">A plugin is any object that takes a viewer and returns a destroy function.
+            The seams: <code>tile-loaded</code>, <code>animation</code>, <code>canvas-click</code>,
+            and the <code>drawer</code> hook chain.</p>
+        </div>
+        <div class="right"><a href="docs.html">Read the plugin guide →</a></div>
+      </div>
+
+      <div class="codeblock">
+        <header>
+          <div class="stage-dots"><span></span><span></span><span></span></div>
+          <span class="fname">my-scalebar-plugin.js</span>
+          <span style="margin-left:auto;">esm</span>
+        </header>
+<pre><span class="tok-key">export function</span> <span class="tok-fn">scalebar</span><span class="tok-pun">(</span>viewer<span class="tok-pun">,</span> opts <span class="tok-pun">=</span> <span class="tok-pun">{}) {</span>
+  <span class="tok-key">const</span> el <span class="tok-pun">=</span> <span class="tok-fn">document</span>.<span class="tok-fn">createElement</span><span class="tok-pun">(</span><span class="tok-str">"div"</span><span class="tok-pun">);</span>
+  el.<span class="tok-fn">className</span> <span class="tok-pun">=</span> <span class="tok-str">"scalebar"</span><span class="tok-pun">;</span>
+  viewer.<span class="tok-fn">canvas</span>.<span class="tok-fn">appendChild</span><span class="tok-pun">(</span>el<span class="tok-pun">);</span>
+
+  <span class="tok-key">const</span> redraw <span class="tok-pun">=</span> <span class="tok-pun">() =&gt; {</span>
+    <span class="tok-key">const</span> mpp <span class="tok-pun">=</span> opts.<span class="tok-fn">micronsPerPixel</span><span class="tok-pun">;</span>
+    <span class="tok-key">const</span> px <span class="tok-pun">=</span> viewer.viewport.<span class="tok-fn">deltaPixelsFromPoints</span><span class="tok-pun">(</span><span class="tok-key">new</span> OpenSeadragon.<span class="tok-fn">Point</span><span class="tok-pun">(</span><span class="tok-num">1</span><span class="tok-pun">,</span> <span class="tok-num">0</span><span class="tok-pun">)).</span>x<span class="tok-pun">;</span>
+    el.<span class="tok-fn">textContent</span> <span class="tok-pun">=</span> <span class="tok-pun">(</span>px <span class="tok-pun">*</span> mpp<span class="tok-pun">).</span><span class="tok-fn">toFixed</span><span class="tok-pun">(</span><span class="tok-num">1</span><span class="tok-pun">)</span> <span class="tok-pun">+</span> <span class="tok-str">" µm"</span><span class="tok-pun">;</span>
+  <span class="tok-pun">};</span>
+
+  viewer.<span class="tok-fn">addHandler</span><span class="tok-pun">(</span><span class="tok-str">"animation"</span><span class="tok-pun">,</span> redraw<span class="tok-pun">);</span>
+  <span class="tok-fn">redraw</span><span class="tok-pun">();</span>
+
+  <span class="tok-key">return</span> <span class="tok-pun">() =&gt; {</span>
+    viewer.<span class="tok-fn">removeHandler</span><span class="tok-pun">(</span><span class="tok-str">"animation"</span><span class="tok-pun">,</span> redraw<span class="tok-pun">);</span>
+    el.<span class="tok-fn">remove</span><span class="tok-pun">();</span>
+  <span class="tok-pun">};</span>
+<span class="tok-pun">}</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER (shared) -->
+  <footer class="foot" data-screen-label="06 Footer">
+    <div class="container">
+      <div class="foot-grid">
+        <div>
+          <a href="index.html" class="brand">
+            <span class="brand-mark" aria-hidden="true"><svg class="brand-glyph" viewBox="0 0 24 24" fill="none"><rect class="bg-outer" x="3" y="3" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linejoin="round" rx="1.5"/><rect class="bg-inner" x="8" y="8" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-opacity="0.55" rx="1.5"/><rect class="bg-dot" x="11" y="11" width="3" height="3" fill="currentColor"/></svg></span>
+            <span>OpenSeadragon</span>
+          </a>
+          <p class="muted" style="margin-top:16px;font-size:13px;max-width:34ch;">
+            An open-source, web-based viewer for high-resolution zoomable images.
+            BSD-3 licensed. No tracking. No npm-install drama.
+          </p>
+        </div>
+        <div>
+          <h5>Product</h5>
+          <ul>
+            <li><a href="docs.html">Docs</a></li>
+            <li><a href="examples.html">Examples</a></li>
+            <li><a href="plugins.html">Plugins</a></li>
+            <li><a href="docs.html#api">API reference</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Learn</h5>
+          <ul>
+            <li><a href="docs.html">Getting started</a></li>
+            <li><a href="#">Creating tiles</a></li>
+            <li><a href="#">Migration to v6</a></li>
+            <li><a href="#">Course</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Community</h5>
+          <ul>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="community.html">Discussions</a></li>
+            <li><a href="#">Stack Overflow</a></li>
+            <li><a href="community.html#sponsor">Sponsor</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="#">BSD-3 license</a></li>
+            <li><a href="#">Contributing</a></li>
+            <li><a href="#">Code of conduct</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2002–2026 · BSD-3-Clause</span>
+        <span>Made by people who like seeing the brushstrokes.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Page-specific plugin data + renderer -->
+  <script>
+  window.__PLUGINS_DATA = [
+    { name: 'Annotorious',    mark: 'An', cat: 'Annotations',  desc: 'W3C Web Annotations + drawing tools — points, polygons, freehand.',         install: '@recogito/annotorious-openseadragon', stars: '1.8k', updated: '4d ago' },
+    { name: 'Scalebar',       mark: 'Sc', cat: 'Overlays',     desc: 'Real-world units overlay. Microns / millimeters / pixels — your choice.',  install: 'openseadragon-scalebar',              stars: '420',  updated: '12d ago' },
+    { name: 'Fabric overlay', mark: 'Fa', cat: 'Drawing',      desc: 'Fabric.js shapes in image space. Pans, zooms, rotates with the viewer.',  install: 'openseadragon-fabricjs-overlay',      stars: '215',  updated: '2mo ago' },
+    { name: 'SVG overlay',    mark: 'Sv', cat: 'Overlays',     desc: 'Declarative SVG layer that tracks the viewport. d3.js compatible.',       install: '@openseadragon/svg-overlay',          stars: '180',  updated: '6mo ago' },
+    { name: 'Screenshot',     mark: 'Sh', cat: 'Capture',      desc: 'Capture the current view as a PNG. Includes overlays and scalebar.',       install: 'openseadragon-screenshot',            stars: '94',   updated: '3w ago' },
+    { name: 'Filtering',      mark: 'Fi', cat: 'Effects',      desc: 'Brightness, contrast, color, convolutions. WebGL-accelerated.',           install: 'openseadragonfilters',                stars: '160',  updated: '5d ago' },
+    { name: 'Leaflet bridge', mark: 'Le', cat: 'Integration',  desc: 'Swap between OSD and Leaflet drivers. Useful for geo applications.',      install: 'osd-leaflet-bridge',                  stars: '52',   updated: '8mo ago' },
+    { name: 'GeoJSON',        mark: 'Ge', cat: 'Integration',  desc: 'Render GeoJSON features as an OSD overlay. Click → properties.',          install: 'openseadragon-geojson',               stars: '78',   updated: '3mo ago' },
+    { name: 'Curtain',        mark: 'Cu', cat: 'Comparison',   desc: 'Before / after comparison slider. Two images, draggable curtain.',         install: 'openseadragon-curtain-sync',          stars: '210',  updated: '6w ago' },
+    { name: 'Bookmark URL',   mark: 'Bk', cat: 'UI',           desc: 'Sync viewer pan/zoom to URL fragment. Sharable views out of the box.',    install: 'openseadragon-bookmark-url',          stars: '120',  updated: '1mo ago' },
+    { name: 'Image rotation', mark: 'Ro', cat: 'UI',           desc: 'Manual + animated rotation controls with constrained-axis options.',     install: 'osd-rotate',                          stars: '36',   updated: '5mo ago' },
+    { name: 'Minimap+',       mark: 'Mp', cat: 'UI',           desc: 'Richer minimap with multi-region highlights and bookmarks.',             install: 'osd-minimap-plus',                    stars: '88',   updated: '7w ago' },
+    { name: 'Measurement',    mark: 'Me', cat: 'Annotations',  desc: 'Pixel + real-world distance & area measurements. Pathology-ready.',       install: 'osd-measurement',                     stars: '142',  updated: '11d ago' },
+    { name: 'IIIF Manifest',  mark: 'Im', cat: 'Tile sources', desc: 'Load IIIF Presentation API manifests. Multi-canvas navigation built-in.',install: 'osd-iiif-manifest',                   stars: '305',  updated: '2w ago' },
+    { name: 'WebGL drawer',   mark: 'Wg', cat: 'Effects',      desc: 'Hardware-accelerated drawer with blend modes and shader hooks.',          install: 'openseadragon-webgl',                 stars: '410',  updated: '1w ago' },
+    { name: 'Zoomify',        mark: 'Zo', cat: 'Tile sources', desc: 'Read Zoomify pyramid format. For legacy archives.',                      install: 'openseadragon-zoomify',               stars: '64',   updated: '14mo ago' },
+    { name: 'OSM tile source',mark: 'Os', cat: 'Tile sources', desc: 'OSM-style tile servers as an OSD source. For map composites.',           install: 'osd-osm-source',                      stars: '40',   updated: '5mo ago' },
+    { name: 'GeoTIFF source', mark: 'Gt', cat: 'Tile sources', desc: 'View TIFF-compatible files via geotiff.js. Float pixel support.',        install: 'osd-geotiff-source',                  stars: '230',  updated: '3w ago' },
+    { name: 'Draggable nav',  mark: 'Dn', cat: 'UI',           desc: 'Make the navigator draggable over the OpenSeadragon viewer.',            install: 'osd-draggable-navigator',             stars: '54',   updated: '9mo ago' },
+    { name: 'Canvas overlay', mark: 'Co', cat: 'Overlays',     desc: 'HD canvas overlay that pans/zooms with the viewer. Retina-safe.',        install: 'osd-canvas-overlay-hd',               stars: '102',  updated: '4mo ago' },
+    { name: 'Doodle',         mark: 'Do', cat: 'Drawing',      desc: 'Draw graphics on the image. 100,000 interactive shapes at 60fps.',       install: 'osd-doodle',                          stars: '320',  updated: '2mo ago' },
+  ];
+  </script>
+  <script src="site.js"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="tweaks.jsx"></script>
+</body>
+</html>
