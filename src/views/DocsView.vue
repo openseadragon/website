@@ -190,7 +190,7 @@ viewer.<span class="tok-fn">addHandler</span><span class="tok-pun">(</span><span
             <h2 style="margin-top: 64px;">Recent releases</h2>
             <div class="whatsnew">
               <a href="#">
-                <span class="v">v6.0.2 · 3 days ago</span>
+                <span class="v">{{ tag }} · latest</span>
                 <b>WebGL drawer, stable</b>
                 <p>Smoother filters and blend modes. Opt-in, drop-out — canvas remains the default.</p>
               </a>
@@ -260,6 +260,9 @@ import SiteFooter from '@/components/SiteFooter.vue'
 import TweaksPanel from '@/components/TweaksPanel.vue'
 import { TweakSection, TweakRadio, TweakColor } from '@/components/tweaks/TweakControls.vue'
 import { useAnimations } from '@/composables/useAnimations.js'
+import { useOSDVersion } from '@/composables/useOSDVersion.js'
+
+const { tag } = useOSDVersion()
 
 const ACCENT_OPTIONS = [
   ['#67d6ee', '#0f1922', '#f3fbfd'],

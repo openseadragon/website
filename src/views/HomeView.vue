@@ -23,7 +23,7 @@
       </svg>
 
       <div class="container">
-        <div class="eyebrow"><span class="dot"></span> v6.0.2 just shipped · MIT open source · zero dependencies</div>
+        <div class="eyebrow"><span class="dot"></span> {{ tag }} just shipped · MIT open source · zero dependencies</div>
         <div class="hero-grid" style="margin-top: 28px;">
           <div class="hero-copy">
             <h1 class="h-display">Deep zoom for<br/><em>massive</em> images.</h1>
@@ -70,7 +70,7 @@
               </g>
               <g class="wire-labels" font-family="ui-monospace, monospace" font-size="9" fill="currentColor" opacity="0.7">
                 <text x="28" y="34">L8 · 256²</text>
-                <text x="700" y="34" text-anchor="end">3556 × 4800</text>
+                <text x="700" y="34" text-anchor="end">7026 × 9221</text>
                 <text x="28" y="424">tiles cached 0/—</text>
                 <text x="700" y="424" text-anchor="end">zoom 1.00×</text>
               </g>
@@ -114,7 +114,7 @@
           <div class="container" style="padding-bottom:28px;padding-top:22px;">
             <div class="hero-strip">
               <div>SOURCE<br/><b id="strip-source">{{ stripSource }}</b></div>
-              <div>TILES<br/><b>256×256 deep-zoom pyramid</b></div>
+              <div>TILES<br/><b>tiled image pyramid</b></div>
               <div>MEMORY<br/><b>only visible tiles in RAM</b></div>
               <div>RENDERER<br/><b>canvas2d · webgl optional</b></div>
             </div>
@@ -350,12 +350,13 @@ import { TweakRadio, TweakColor } from '../components/tweaks/TweakControls.vue'
 import { useParticles } from '../composables/useParticles.js'
 import { usePluginsMap } from '../composables/usePluginsMap.js'
 import { useAnimations, useCursorSpot, useCopyButtons, useCommunityTilt } from '../composables/useAnimations.js'
+import { useOSDVersion } from '../composables/useOSDVersion.js'
 
 // ── Reactive display state ──
 const tileCount = ref('—')
 const zoomReadout = ref('1.00×')
-const srcName = ref('Van Gogh · The Starry Night')
-const stripSource = ref('3,556 × 4,800 px JPEG')
+const srcName = ref('Highsmith Archive · Library of Congress')
+const stripSource = ref('7,026 × 9,221 px · DZI pyramid')
 
 // ── Tweaks state ──
 const tweaks = reactive({ theme: 'dark', accent: 'aqua', frame: 'art', heroLayout: 'left' })
@@ -366,6 +367,7 @@ watch(() => tweaks.heroLayout, val => document.body.classList.toggle('hero-cente
 watch(() => tweaks.frame, val => { rebuildViewersForTheme(val) })
 
 // ── Composables ──
+const { tag, prefixUrl } = useOSDVersion()
 useParticles('tile-particles', '.hero')
 usePluginsMap()
 useAnimations()
@@ -379,7 +381,12 @@ let secondaryViewer = null
 let miniViewers = []
 let currentTheme = 'art'
 
-function getDemoImageUrl(theme) { return `img/demo-${theme}.jpg` }
+const DEMO_TILE_SOURCES = {
+  art:   'https://openseadragon.github.io/example-images/highsmith/highsmith.dzi',
+  micro: 'https://iiif.wellcomecollection.org/image/B0009508/info.json',
+  maps:  'https://iiif.wellcomecollection.org/image/L0072917/info.json'
+}
+function getDemoTileSource(theme) { return DEMO_TILE_SOURCES[theme] || DEMO_TILE_SOURCES.art }
 
 function runTour(v) {
   const points = [
@@ -403,8 +410,8 @@ function initCaseViewer(mountId, theme) {
   if (!mount || !window.OpenSeadragon) return null
   const v = window.OpenSeadragon({
     element: mount,
-    prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@6.0.2/build/openseadragon/images/',
-    tileSources: { type: 'image', url: getDemoImageUrl(theme) },
+    prefixUrl: prefixUrl.value,
+    tileSources: getDemoTileSource(theme),
     showNavigator: false, showNavigationControl: false, mouseNavEnabled: false,
     gestureSettingsMouse: { scrollToZoom: false, clickToZoom: false, dblClickToZoom: false, dragToPan: false, flickEnabled: false },
     gestureSettingsTouch: { scrollToZoom: false, clickToZoom: false, dblClickToZoom: false, dragToPan: false, flickEnabled: false },
@@ -427,10 +434,11 @@ function initHeroViewer() {
   if (!mount || !window.OpenSeadragon) return
   heroViewer = window.OpenSeadragon({
     element: mount,
-    prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@6.0.2/build/openseadragon/images/',
-    tileSources: { type: 'image', url: getDemoImageUrl(currentTheme) },
+    prefixUrl: prefixUrl.value,
+    tileSources: getDemoTileSource(currentTheme),
     showNavigator: true, navigatorId: 'osd-hero-navigator',
     navigatorBackground: '#1a1a1a', navigatorBorderColor: 'transparent', navigatorDisplayRegionColor: '#7adff5',
+    crossOriginPolicy: 'Anonymous',
     showNavigationControl: false, showZoomControl: false, showHomeControl: false, showFullPageControl: false,
     animationTime: 0.9, springStiffness: 6.5, blendTime: 0.1, immediateRender: false,
     zoomPerScroll: 1.5, minZoomImageRatio: 0.7, maxZoomPixelRatio: 8, visibilityRatio: 0.7, constrainDuringPan: true,
@@ -462,14 +470,10 @@ function initHeroViewer() {
     updateThumb()
     if (heroViewer.navigator) {
       setTimeout(() => {
-        const navEl = document.getElementById('osd-hero-navigator')
-        if (navEl && heroViewer.navigator.updateSize) {
-          const r = navEl.getBoundingClientRect()
-          heroViewer.navigator.element.style.width = r.width + 'px'
-          heroViewer.navigator.element.style.height = r.height + 'px'
-          heroViewer.navigator.updateSize(); heroViewer.navigator.update(heroViewer.viewport)
-        }
-      }, 60)
+        heroViewer.navigator.updateSize()
+        heroViewer.navigator.viewport.goHome(true)
+        heroViewer.navigator.update(heroViewer.viewport)
+      }, 150)
     }
   })
   heroViewer.addHandler('zoom', () => { zoomReadout.value = heroViewer.viewport.getZoom(true).toFixed(2) + '×'; updateThumb() })
@@ -516,13 +520,22 @@ function initSecondaryViewer() {
   if (!mount || !window.OpenSeadragon) return
   secondaryViewer = window.OpenSeadragon({
     element: mount,
-    prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@6.0.2/build/openseadragon/images/',
-    tileSources: { type: 'image', url: getDemoImageUrl(currentTheme) },
+    prefixUrl: prefixUrl.value,
+    tileSources: getDemoTileSource(currentTheme),
     showNavigator: true, navigatorPosition: 'TOP_RIGHT', navigatorHeight: '60px', navigatorWidth: '100px',
+    crossOriginPolicy: 'Anonymous',
     showNavigationControl: false, animationTime: 0.9, zoomPerScroll: 1.4, background: '#000',
     minZoomImageRatio: 0.8, visibilityRatio: 0.8, constrainDuringPan: true
   })
-  secondaryViewer.addHandler('open', () => secondaryViewer.viewport.goHome(true))
+  secondaryViewer.addHandler('open', () => {
+    secondaryViewer.viewport.goHome(true)
+    if (secondaryViewer.navigator) {
+      setTimeout(() => {
+        secondaryViewer.navigator.updateSize()
+        secondaryViewer.navigator.viewport.goHome(true)
+      }, 150)
+    }
+  })
 }
 
 function paintExampleThumb(canvas, hue, level) {
@@ -573,8 +586,8 @@ function buildExamples() {
     if (!mount || !window.OpenSeadragon) return
     const v = window.OpenSeadragon({
       element: mount,
-      prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@6.0.2/build/openseadragon/images/',
-      tileSources: { type: 'image', url: getDemoImageUrl(it.live) },
+      prefixUrl: prefixUrl.value,
+      tileSources: getDemoTileSource(it.live),
       showNavigator: false, showNavigationControl: false, mouseNavEnabled: false,
       gestureSettingsMouse: { scrollToZoom: false, clickToZoom: false, dblClickToZoom: false, dragToPan: false, flickEnabled: false },
       gestureSettingsTouch: { scrollToZoom: false, clickToZoom: false, dblClickToZoom: false, dragToPan: false, flickEnabled: false },
@@ -598,9 +611,9 @@ function rebuildViewersForTheme(theme) {
   if (heroViewer) { heroViewer.destroy(); heroViewer = null }
   if (secondaryViewer) { secondaryViewer.destroy(); secondaryViewer = null }
   initHeroViewer(); initSecondaryViewer()
-  if (theme === 'art')   { srcName.value = 'Van Gogh · The Starry Night (study tile)'; stripSource.value = '13,824 × 10,368 px synthetic DZI' }
-  if (theme === 'micro') { srcName.value = 'H&E whole-slide · liver biopsy'; stripSource.value = '28,672 × 21,504 px @ 40×' }
-  if (theme === 'maps')  { srcName.value = 'Antarctic survey · sheet 47-N'; stripSource.value = '32,768 × 24,576 px tile pyramid' }
+  if (theme === 'art')   { srcName.value = 'Highsmith Archive · Library of Congress'; stripSource.value = '7,026 × 9,221 px · DZI · 7 zoom levels' }
+  if (theme === 'micro') { srcName.value = 'Skin tissue · fluorescence microscopy (Wellcome)'; stripSource.value = '4,792 × 3,654 px · IIIF level 2 · 6 zoom levels' }
+  if (theme === 'maps')  { srcName.value = 'John Snow\'s Cholera Map, 1854 (Wellcome)'; stripSource.value = '4,757 × 4,418 px · IIIF level 2 · 7 zoom levels' }
 }
 
 onMounted(() => {

@@ -10,7 +10,7 @@
           </svg>
         </span>
         <span>OpenSeadragon</span>
-        <span class="mono" style="font-size:11px;color:var(--paper-mute);margin-left:6px;">v6.0.2</span>
+        <span class="mono" style="font-size:11px;color:var(--paper-mute);margin-left:6px;">{{ tag }}</span>
       </RouterLink>
 
       <div class="nav-links">
@@ -78,9 +78,11 @@
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useTheme } from '../composables/useTheme.js'
+import { useOSDVersion } from '../composables/useOSDVersion.js'
 
 const route = useRoute()
 const { toggle } = useTheme()
+const { tag } = useOSDVersion()
 
 const ghStars = ref('3.4k')
 const mobileOpen = ref(false)

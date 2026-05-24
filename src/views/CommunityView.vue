@@ -140,7 +140,7 @@
             <ul class="activity-list">
               <li class="activity-item">
                 <span class="when">3 days ago</span>
-                <span class="what"><span class="who">iangilman</span> released <code>v6.0.2</code> — bug fixes for WebGL drawer on Safari + tile-loaded memory leak</span>
+                <span class="what"><span class="who">iangilman</span> released <code>{{ tag }}</code> — bug fixes for WebGL drawer on Safari + tile-loaded memory leak</span>
                 <span class="tag release">release</span>
               </li>
               <li class="activity-item">
@@ -308,10 +308,13 @@
 import { reactive, ref, watch, onMounted } from 'vue'
 import NavBar from '@/components/NavBar.vue'
 import SiteFooter from '@/components/SiteFooter.vue'
+import { useOSDVersion } from '@/composables/useOSDVersion.js'
 import TweaksPanel from '@/components/TweaksPanel.vue'
 import { TweakSection, TweakRadio, TweakColor } from '@/components/tweaks/TweakControls.vue'
 import { useParticles } from '@/composables/useParticles.js'
 import { useAnimations, useCursorSpot, useCommunityTilt } from '@/composables/useAnimations.js'
+
+const { tag } = useOSDVersion()
 
 const ACCENT_OPTIONS = [
   ['#67d6ee', '#0f1922', '#f3fbfd'],
