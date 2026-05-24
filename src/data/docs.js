@@ -61,6 +61,13 @@ export const DOC_NAV = [
     ],
   },
   {
+    label: 'Frameworks',
+    items: [
+      { title: 'Web frameworks', path: '/docs/framework-web' },
+      { title: 'Desktop apps', path: '/docs/framework-desktop' },
+    ],
+  },
+  {
     label: 'Migration',
     items: [
       { title: 'v5 → v6', path: '/docs/migration-v6' },
@@ -1724,6 +1731,267 @@ viewer.requestInvalidate();`,
             type: 'callout',
             title: 'Report issues',
             html: 'If you encounter device-specific WebGL problems, <a href="https://github.com/openseadragon/openseadragon/issues" target="_blank" rel="noopener" style="color:var(--accent)">file an issue</a> on GitHub.',
+          },
+        ],
+      },
+    ],
+  },
+
+  'framework-web': {
+    title: 'OpenSeadragon in Web Frameworks',
+    category: 'Frameworks',
+    lede: 'OpenSeadragon is a plain-JS library with no framework dependencies. Wrapping it in React, Vue, Svelte, Solid, or Lit follows the same pattern: mount the viewer after the DOM element renders, and destroy it on unmount.',
+    sections: [
+      {
+        id: 'pattern',
+        heading: 'The universal pattern',
+        blocks: [
+          { type: 'p', html: 'Every framework wrapper has three responsibilities: (1) render a container <code>&lt;div&gt;</code>, (2) call <code>OpenSeadragon()</code> after the element exists in the DOM, (3) call <code>viewer.destroy()</code> when the component is removed. Everything else is framework sugar.' },
+          {
+            type: 'callout',
+            title: 'Never pass a virtual element',
+            html: 'OpenSeadragon needs a real DOM node. Always wait for the framework\'s equivalent of <code>mounted</code> / <code>useEffect</code> before creating the viewer, or pass the element reference directly via <code>element:</code> instead of <code>id:</code>.',
+          },
+        ],
+      },
+      {
+        id: 'react',
+        heading: 'React',
+        blocks: [
+          { type: 'p', html: 'Use <code>useEffect</code> with an empty dependency array to create the viewer once, and return a cleanup function to destroy it.' },
+          {
+            type: 'code',
+            filename: 'OSDViewer.jsx',
+            code: `import { useEffect, useRef } from 'react'
+import OpenSeadragon from 'openseadragon'
+
+export default function OSDViewer({ tileSources, options = {} }) {
+  const containerRef = useRef(null)
+
+  useEffect(() => {
+    const viewer = OpenSeadragon({
+      element: containerRef.current,
+      prefixUrl: '/openseadragon/images/',
+      tileSources,
+      ...options,
+    })
+    return () => viewer.destroy()
+  }, [])
+
+  return <div ref={containerRef} style={{ width: '100%', height: '600px' }} />
+}`,
+          },
+        ],
+      },
+      {
+        id: 'vue',
+        heading: 'Vue 3',
+        blocks: [
+          { type: 'p', html: 'Use <code>onMounted</code> and <code>onUnmounted</code> from the Composition API. Pass the template ref directly as <code>element</code> so no ID lookup is needed.' },
+          {
+            type: 'code',
+            filename: 'OSDViewer.vue',
+            code: `<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import OpenSeadragon from 'openseadragon'
+
+const props = defineProps(['tileSources', 'options'])
+const container = ref(null)
+let viewer = null
+
+onMounted(() => {
+  viewer = OpenSeadragon({
+    element: container.value,
+    prefixUrl: '/openseadragon/images/',
+    tileSources: props.tileSources,
+    ...props.options,
+  })
+})
+
+onUnmounted(() => viewer?.destroy())
+</script>
+
+<template>
+  <div ref="container" style="width:100%;height:600px" />
+</template>`,
+          },
+        ],
+      },
+      {
+        id: 'svelte',
+        heading: 'Svelte 5',
+        blocks: [
+          { type: 'p', html: 'Svelte 5 uses runes. Bind the DOM element with <code>bind:this</code>, then create the viewer inside <code>$effect</code>. Return the destroy call from the effect for automatic cleanup.' },
+          {
+            type: 'code',
+            filename: 'OSDViewer.svelte',
+            code: `<script>
+  import { $effect } from 'svelte'
+  import OpenSeadragon from 'openseadragon'
+
+  let { tileSources, options = {} } = $props()
+  let container = $state(null)
+
+  $effect(() => {
+    if (!container) return
+    const viewer = OpenSeadragon({
+      element: container,
+      prefixUrl: '/openseadragon/images/',
+      tileSources,
+      ...options,
+    })
+    return () => viewer.destroy()
+  })
+</script>
+
+<div bind:this={container} style="width:100%;height:600px" />`,
+          },
+        ],
+      },
+      {
+        id: 'solid',
+        heading: 'Solid',
+        blocks: [
+          { type: 'p', html: 'Solid\'s <code>onMount</code> fires once after the DOM is ready. Use <code>onCleanup</code> to register the destroy call.' },
+          {
+            type: 'code',
+            filename: 'OSDViewer.jsx',
+            code: `import { onMount, onCleanup } from 'solid-js'
+import OpenSeadragon from 'openseadragon'
+
+export default function OSDViewer(props) {
+  let container
+
+  onMount(() => {
+    const viewer = OpenSeadragon({
+      element: container,
+      prefixUrl: '/openseadragon/images/',
+      tileSources: props.tileSources,
+      ...props.options,
+    })
+    onCleanup(() => viewer.destroy())
+  })
+
+  return <div ref={container} style="width:100%;height:600px" />
+}`,
+          },
+        ],
+      },
+      {
+        id: 'lit',
+        heading: 'Lit custom element',
+        blocks: [
+          { type: 'p', html: 'Extend <code>LitElement</code> and create the viewer in <code>firstUpdated</code> — Lit\'s lifecycle hook that fires after the first render. Destroy in <code>disconnectedCallback</code>.' },
+          {
+            type: 'code',
+            filename: 'osd-viewer.js',
+            code: `import { LitElement, html, css } from 'lit'
+import OpenSeadragon from 'openseadragon'
+
+class OSDViewer extends LitElement {
+  static properties = {
+    tileSources: { type: Object },
+  }
+
+  static styles = css\`
+    :host { display: block; width: 100%; height: 600px; }
+    #viewer { width: 100%; height: 100%; }
+  \`
+
+  firstUpdated() {
+    this._viewer = OpenSeadragon({
+      element: this.renderRoot.querySelector('#viewer'),
+      prefixUrl: '/openseadragon/images/',
+      tileSources: this.tileSources,
+    })
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback()
+    this._viewer?.destroy()
+  }
+
+  render() {
+    return html\`<div id="viewer"></div>\`
+  }
+}
+
+customElements.define('osd-viewer', OSDViewer)`,
+          },
+        ],
+      },
+    ],
+  },
+
+  'framework-desktop': {
+    title: 'OpenSeadragon in Desktop Apps',
+    category: 'Frameworks',
+    lede: 'Electron and Tauri both embed a web renderer, so OpenSeadragon works as-is. The main considerations are asset serving, CORS policy, and renderer security settings.',
+    sections: [
+      {
+        id: 'electron',
+        heading: 'Electron',
+        blocks: [
+          { type: 'p', html: 'Electron\'s renderer process is a Chromium window that loads local HTML. Serve OpenSeadragon and tile sources from the app bundle or a local HTTP server started by the main process.' },
+          {
+            type: 'callout',
+            title: 'webSecurity and CORS',
+            html: 'By default Electron enforces CORS in the renderer. If your tile sources are remote URLs, either configure your server to send the right CORS headers, or disable <code>webSecurity</code> in the <code>BrowserWindow</code> options for development only — never in production.',
+          },
+          {
+            type: 'code',
+            filename: 'main.js',
+            code: `const { app, BrowserWindow } = require('electron')
+const path = require('path')
+
+app.whenReady().then(() => {
+  const win = new BrowserWindow({
+    width: 1280,
+    height: 800,
+    webPreferences: {
+      // Enable if loading tiles from a local file:// URL without a dev server
+      // webSecurity: false,
+      contextIsolation: true,
+    },
+  })
+  win.loadFile(path.join(__dirname, 'renderer/index.html'))
+})`,
+          },
+          {
+            type: 'p', html: 'Inside the renderer, use OpenSeadragon exactly as in a browser. If you serve tiles from the local filesystem, use a small Express server in the main process and point <code>tileSources</code> at <code>http://localhost:PORT/...</code>.',
+          },
+        ],
+      },
+      {
+        id: 'tauri',
+        heading: 'Tauri',
+        blocks: [
+          { type: 'p', html: 'Tauri uses the OS\'s native WebView (WebKit on macOS/Linux, WebView2 on Windows). OpenSeadragon works without modification. Bundle your frontend with Vite or another bundler and point Tauri\'s <code>distDir</code> at the build output.' },
+          {
+            type: 'code',
+            filename: 'tauri.conf.json (excerpt)',
+            code: `{
+  "build": {
+    "distDir": "../dist",
+    "devPath": "http://localhost:5173"
+  },
+  "tauri": {
+    "allowlist": {
+      "protocol": {
+        "asset": true,
+        "assetScope": ["**"]
+      }
+    }
+  }
+}`,
+          },
+          {
+            type: 'callout',
+            title: 'Native WebView quirks',
+            html: 'WebKit on older macOS versions has WebGL limitations. If you rely on the WebGL drawer, test on the minimum macOS version you intend to support. Fall back to the Canvas drawer via <code>drawer: \'canvas\'</code> if needed.',
+          },
+          {
+            type: 'p', html: 'To load local tile pyramids, use Tauri\'s <code>asset</code> protocol: <code>https://asset.localhost/path/to/tiles/</code>. No extra server process needed.',
           },
         ],
       },

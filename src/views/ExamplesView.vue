@@ -113,10 +113,10 @@
         </div>
 
         <div class="examples-page-grid">
-          <a
+          <RouterLink
             v-for="ex in filteredExamples"
             :key="ex.tag"
-            href="#"
+            :to="`/docs/${ex.slug}`"
             class="ex-card"
             :style="{ '--hue': ex.hue }"
           >
@@ -128,7 +128,7 @@
               <span class="ex-cat">{{ ex.cat }}</span>
               <b>{{ ex.title }}</b>
             </div>
-          </a>
+          </RouterLink>
         </div>
       </div>
     </section>
