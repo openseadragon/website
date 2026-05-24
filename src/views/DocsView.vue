@@ -218,11 +218,11 @@ viewer.<span class="tok-fn">addHandler</span><span class="tok-pun">(</span><span
             <a href="#" :class="{ active: tocActive === 'events' }" @click.prevent="scrollTo('events')">Common events</a>
             <a href="#migration" :class="{ active: tocActive === 'migration' }">Migrating from v5</a>
             <a href="#" :class="{ active: tocActive === 'releases' }" @click.prevent="scrollTo('releases')">Recent releases</a>
-            <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line-soft);">
-              <h6 style="margin-bottom: 12px;">Help us</h6>
-              <a href="#" style="color: var(--paper-dim);">Edit this page</a>
-              <a href="#" style="color: var(--paper-dim);">Report an issue</a>
-              <a href="#" style="color: var(--paper-dim);">Discuss in GitHub</a>
+            <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line-soft); display: flex; flex-direction: column; gap: 8px;">
+              <h6 style="margin-bottom: 4px;">Help us</h6>
+              <a href="https://github.com/openseadragon/openseadragon/blob/master/README.md" target="_blank" rel="noopener noreferrer" style="color: var(--paper-dim);">Edit this page</a>
+              <a href="https://github.com/openseadragon/openseadragon/issues/new" target="_blank" rel="noopener noreferrer" style="color: var(--paper-dim);">Report an issue</a>
+              <a href="https://github.com/openseadragon/openseadragon/discussions" target="_blank" rel="noopener noreferrer" style="color: var(--paper-dim);">Discuss in GitHub</a>
             </div>
           </aside>
 

@@ -23,7 +23,7 @@
 
       <div class="nav-spacer"></div>
 
-      <button class="nav-search" aria-label="Search docs">
+      <button class="nav-search" aria-label="Search docs" @click="openSearch">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
         <span>Search the docs</span>
         <span class="kbd">⌘ K</span>
@@ -72,6 +72,8 @@
       </div>
     </div>
   </Teleport>
+
+  <SearchModal />
 </template>
 
 <script setup>
@@ -79,10 +81,13 @@ import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useTheme } from '../composables/useTheme.js'
 import { useOSDVersion } from '../composables/useOSDVersion.js'
+import { useSearch } from '../composables/useSearch.js'
+import SearchModal from './SearchModal.vue'
 
 const route = useRoute()
 const { toggle } = useTheme()
 const { tag } = useOSDVersion()
+const { open: openSearch } = useSearch()
 
 const ghStars = ref('…')
 const mobileOpen = ref(false)
@@ -117,6 +122,7 @@ watch(mobileOpen, (val) => {
 
 const onKeydown = (e) => {
   if (e.key === 'Escape') mobileOpen.value = false
+  if (e.key === 'k' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); openSearch() }
 }
 
 onMounted(async () => {
