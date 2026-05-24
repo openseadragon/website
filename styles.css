@@ -1597,12 +1597,10 @@ body.hero-centered .lede { text-align: center; }
 .doc-toc {
   position: sticky; top: 90px;
   max-height: calc(100vh - 110px);
-  overflow-y: auto;
+  overflow-y: visible;
   font-size: 13px;
   color: var(--paper-mute);
   display: flex; flex-direction: column; gap: 8px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--line) transparent;
 }
 .doc-toc h6 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 8px; font-weight: 500; color: var(--paper-mute); }
 .doc-toc a { color: var(--paper-mute); padding: 3px 0; }
