@@ -1,11 +1,11 @@
 <template>
   <div>
+    <div class="cursor-spot" id="cursor-spot" aria-hidden="true"></div>
     <NavBar />
 
     <!-- HERO -->
     <header class="hero" data-screen-label="02 Hero">
       <canvas id="tile-particles" class="tile-particles" aria-hidden="true"></canvas>
-      <div class="cursor-spot" id="cursor-spot" aria-hidden="true"></div>
       <svg class="hero-wires" aria-hidden="true" viewBox="0 0 1280 720" preserveAspectRatio="none">
         <defs>
           <pattern id="wires-grid" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">

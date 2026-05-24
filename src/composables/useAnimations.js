@@ -350,17 +350,35 @@ function wireFeatureIcons() {
 }
 
 export function useCursorSpot() {
+  let rafId = null
+  const cleanupFns = []
+
   onMounted(() => {
-    const hero = document.querySelector('.hero, .page-hero')
     const spot = document.getElementById('cursor-spot')
-    if (!hero || !spot) return
-    let tx = 0, ty = 0, x = 0, y = 0
-    hero.addEventListener('mousemove', (e) => {
-      const r = hero.getBoundingClientRect()
-      tx = e.clientX - r.left; ty = e.clientY - r.top
-    })
-    function tick() { x += (tx - x) * 0.15; y += (ty - y) * 0.15; spot.style.setProperty('--mx', x + 'px'); spot.style.setProperty('--my', y + 'px'); requestAnimationFrame(tick) }
+    if (!spot) return
+    let tx = window.innerWidth / 2, ty = window.innerHeight / 2, x = tx, y = ty
+
+    const onMove = (e) => { tx = e.clientX; ty = e.clientY; spot.classList.add('is-active') }
+    const onLeave = () => spot.classList.remove('is-active')
+
+    document.addEventListener('mousemove', onMove, { passive: true })
+    document.addEventListener('mouseleave', onLeave)
+    cleanupFns.push(
+      () => document.removeEventListener('mousemove', onMove),
+      () => document.removeEventListener('mouseleave', onLeave)
+    )
+
+    function tick() {
+      x += (tx - x) * 0.12; y += (ty - y) * 0.12
+      spot.style.setProperty('--mx', x + 'px'); spot.style.setProperty('--my', y + 'px')
+      rafId = requestAnimationFrame(tick)
+    }
     tick()
+  })
+
+  onUnmounted(() => {
+    cleanupFns.forEach(fn => fn())
+    if (rafId) cancelAnimationFrame(rafId)
   })
 }
 

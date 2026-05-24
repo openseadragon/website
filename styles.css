@@ -462,29 +462,29 @@ h1, h2, h3, h4 { margin: 0; font-weight: 500; letter-spacing: -0.02em; line-heig
 .hero > .container { position: relative; z-index: 1; }
 .hero .hero-stage { position: relative; z-index: 1; }
 
-/* cursor spotlight — radial accent that tracks the mouse in the hero */
+/* cursor spotlight — radial accent that tracks the mouse across the whole page */
 .cursor-spot {
-  position: absolute;
+  position: fixed;
   top: 0; left: 0;
-  width: 540px; height: 540px;
-  margin-left: -270px; margin-top: -270px;
+  width: 600px; height: 600px;
+  margin-left: -300px; margin-top: -300px;
   pointer-events: none;
   z-index: 0;
   border-radius: 50%;
   background: radial-gradient(
     closest-side,
-    color-mix(in oklch, var(--accent) 40%, transparent) 0%,
-    color-mix(in oklch, var(--accent) 12%, transparent) 35%,
+    color-mix(in oklch, var(--accent) 32%, transparent) 0%,
+    color-mix(in oklch, var(--accent) 9%, transparent) 40%,
     transparent 70%
   );
-  filter: blur(20px);
+  filter: blur(24px);
   mix-blend-mode: screen;
   opacity: 0;
-  transition: opacity 600ms ease;
-  transform: translate3d(var(--mx, 50%), var(--my, 30%), 0);
+  transition: opacity 700ms ease;
+  transform: translate3d(var(--mx, 50vw), var(--my, 50vh), 0);
   will-change: transform, opacity;
 }
-.hero:hover .cursor-spot { opacity: 1; }
+.cursor-spot.is-active { opacity: 0.8; }
 
 /* eyebrow dot ripple */
 .eyebrow .dot {
