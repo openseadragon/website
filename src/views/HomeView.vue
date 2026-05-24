@@ -99,9 +99,6 @@
                     <button class="zc-btn zc-sec" id="zoom-home" aria-label="Reset view">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="5" width="14" height="14" rx="2"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>
                     </button>
-                    <button class="zc-btn zc-sec" id="zoom-full" aria-label="Full screen">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9V5h4M19 9V5h-4M5 15v4h4M19 15v4h-4"/></svg>
-                    </button>
                   </div>
                 </div>
               </div>
@@ -480,11 +477,10 @@ function initHeroViewer() {
   heroViewer.addHandler('tile-loaded', () => { tilesLoaded++; tileCount.value = tilesLoaded.toLocaleString() })
 
   const zIn = document.getElementById('zoom-in'), zOut = document.getElementById('zoom-out')
-  const zHm = document.getElementById('zoom-home'), zFl = document.getElementById('zoom-full')
+  const zHm = document.getElementById('zoom-home')
   if (zIn)  zIn.addEventListener('click', () => heroViewer.viewport.zoomBy(1.5).applyConstraints())
   if (zOut) zOut.addEventListener('click', () => heroViewer.viewport.zoomBy(1/1.5).applyConstraints())
   if (zHm)  zHm.addEventListener('click', () => heroViewer.viewport.goHome())
-  if (zFl)  zFl.addEventListener('click', () => heroViewer.setFullScreen(!heroViewer.isFullPage()))
 
   if (zcThumb && zcRailWrap) {
     const rail = zcRailWrap.querySelector('.zc-rail')
