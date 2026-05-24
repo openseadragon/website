@@ -1098,6 +1098,21 @@ body.hero-centered .lede { text-align: center; }
   color: var(--paper-dim);
   white-space: pre;
   max-width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.codeblock pre::-webkit-scrollbar {
+  height: 4px;
+}
+.codeblock pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+.codeblock pre::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 99px;
+}
+.codeblock pre::-webkit-scrollbar-thumb:hover {
+  background: var(--paper-mute);
 }
 .tok-key { color: var(--accent); }
 .tok-str { color: oklch(0.85 0.12 140); }
