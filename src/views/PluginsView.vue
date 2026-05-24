@@ -17,12 +17,12 @@
       <div class="container">
         <span class="eyebrow"><span class="dot"></span>EXTEND · COMMUNITY-MAINTAINED · BSD-3</span>
         <h1 class="h-display" style="margin-top:18px;">A plugin for<br/><em>almost</em> anything.</h1>
-        <p class="lede" style="margin-top:20px;">Filters, annotations, screenshots, scalebars, SVG overlays, fabric.js,
+        <p class="lede" style="margin-top:20px;">Filters, annotations, screenshots, scalebars, SVG overlays, Fabric.js,
           GeoJSON, image-comparison sliders — community-built and battle-tested.
           Drop them in and keep going.</p>
 
         <div class="hero-stats">
-          <div><b>{{ PLUGINS_DATA.length * 2 + 10 }}</b><span>plugins</span></div>
+          <div><b>{{ PLUGINS_DATA.length }}</b><span>plugins</span></div>
           <div><b>{{ categoryCount }}</b><span>categories</span></div>
           <div><b>9.2M</b><span>downloads / yr</span></div>
           <div><b>BSD-3</b><span>open license</span></div>
@@ -87,18 +87,46 @@
         <div class="plugin-grid">
           <div v-for="plugin in filteredPlugins" :key="plugin.name" class="plugin-card">
             <div class="plugin-card-head">
-              <span class="plugin-mark">{{ plugin.mark }}</span>
-              <div>
-                <b>{{ plugin.name }}</b>
-                <span class="plugin-cat">{{ plugin.cat }}</span>
+              <span class="plugin-card-mark">{{ plugin.mark }}</span>
+              <div class="plugin-card-title">
+                <div class="plugin-card-name">{{ plugin.name }}</div>
+                <div class="plugin-card-cat">{{ plugin.cat }}</div>
               </div>
+              <span
+                v-if="plugin.compat"
+                :class="['plugin-compat', plugin.compat === 'v5+' ? 'plugin-compat-modern' : 'plugin-compat-legacy']"
+              >{{ plugin.compat }}</span>
             </div>
-            <p>{{ plugin.desc }}</p>
-            <div class="plugin-meta">
-              <code class="plugin-install">{{ plugin.install }}</code>
-              <span class="plugin-stars">★ {{ plugin.stars }}</span>
+
+            <p class="plugin-card-desc">{{ plugin.desc }}</p>
+
+            <div class="plugin-card-meta">
+              <a
+                v-if="plugin.repo"
+                :href="`https://github.com/${plugin.repo}`"
+                target="_blank"
+                rel="noopener noreferrer"
+              >GitHub ↗</a>
+              <a
+                v-else-if="plugin.url"
+                :href="plugin.url"
+                target="_blank"
+                rel="noopener noreferrer"
+              >Repository ↗</a>
+              <span v-else></span>
+
+              <a
+                v-if="plugin.repo"
+                :href="`https://github.com/${plugin.repo}/stargazers`"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="plugin-card-stars-link"
+              >★ {{ getStars(plugin) }}</a>
             </div>
-            <div class="plugin-updated">Updated {{ plugin.updated }}</div>
+
+            <div v-if="plugin.repo" class="plugin-card-updated">
+              {{ getUpdated(plugin) }}
+            </div>
           </div>
         </div>
       </div>
@@ -110,7 +138,7 @@
         <div class="section-head">
           <div class="left">
             <span class="eyebrow"><span class="dot"></span>EXTEND IT YOURSELF</span>
-            <h2 class="h-section">Write your own in 60 lines.</h2>
+            <h2 class="h-section">Write your own in under 30 lines.</h2>
             <p class="sub">A plugin is any object that takes a viewer and returns a destroy function.
               The seams: <code>tile-loaded</code>, <code>animation</code>, <code>canvas-click</code>,
               and the <code>drawer</code> hook chain.</p>
@@ -168,6 +196,7 @@ import { TweakSection, TweakRadio, TweakColor } from '@/components/tweaks/TweakC
 import { useParticles } from '@/composables/useParticles.js'
 import { usePluginsMap } from '@/composables/usePluginsMap.js'
 import { useAnimations, useCursorSpot } from '@/composables/useAnimations.js'
+import { useGitHubPluginData } from '@/composables/useGitHubPluginData.js'
 import { PLUGINS_DATA, PLUGIN_NODES } from '@/data/plugins.js'
 
 const ACCENT_OPTIONS = [
@@ -211,6 +240,41 @@ watch(() => tweaks._accentArr, (v) => {
   tweaks.accent = name
   html.setAttribute('data-accent', name)
 })
+
+// ── Live GitHub data ──────────────────────────────────────────────────────────
+
+const { ghData, loading } = useGitHubPluginData(PLUGINS_DATA)
+
+function relativeTime(dateStr) {
+  const days = Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000)
+  if (days === 0) return 'today'
+  if (days < 2) return '1d ago'
+  if (days < 7) return `${days}d ago`
+  if (days < 14) return '1w ago'
+  if (days < 30) return `${Math.floor(days / 7)}w ago`
+  if (days < 60) return '1mo ago'
+  if (days < 365) return `${Math.floor(days / 30)}mo ago`
+  return `${Math.floor(days / 365)}y ago`
+}
+
+function getStars(plugin) {
+  if (!plugin.repo) return '—'
+  const d = ghData[plugin.repo]
+  if (!d) return loading.value ? '…' : '—'
+  if (d.stars == null) return '—'
+  return d.stars >= 1000 ? `${(d.stars / 1000).toFixed(1)}k` : String(d.stars)
+}
+
+function getUpdated(plugin) {
+  if (!plugin.repo) return '—'
+  const d = ghData[plugin.repo]
+  if (!d) return loading.value ? 'Loading…' : '—'
+  const prefix = d.version || 'Commit'
+  const date = d.updatedAt ? relativeTime(d.updatedAt) : '—'
+  return `${prefix} · ${date}`
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 useParticles('tile-particles', '.page-hero')
 usePluginsMap()
