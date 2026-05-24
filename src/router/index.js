@@ -12,6 +12,16 @@ const routes = [
     meta: { title: 'Docs — OpenSeadragon' }
   },
   {
+    path: '/docs/:slug',
+    component: () => import('../views/DocPageView.vue'),
+    meta: { title: 'Docs — OpenSeadragon' }
+  },
+  {
+    path: '/docs/api/:class',
+    component: () => import('../views/ApiPageView.vue'),
+    meta: { title: 'API — OpenSeadragon' }
+  },
+  {
     path: '/examples',
     component: () => import('../views/ExamplesView.vue'),
     meta: { title: 'Examples — OpenSeadragon' }

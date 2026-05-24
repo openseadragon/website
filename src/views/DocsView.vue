@@ -8,54 +8,25 @@
 
           <!-- LEFT SIDEBAR -->
           <aside class="doc-side">
-            <div class="doc-group">
-              <h6>Getting started</h6>
-              <a href="#getting-started" class="active">Quickstart</a>
-              <a href="#">Installation</a>
-              <a href="#">Your first viewer</a>
-              <a href="#">Creating tiles</a>
-              <a href="#">Common pitfalls</a>
-            </div>
-            <div class="doc-group">
-              <h6>Guides</h6>
-              <a href="#">Basic configuration</a>
-              <a href="#">Tile sources</a>
-              <a href="#">Viewport &amp; coordinates</a>
-              <a href="#">Overlays</a>
-              <a href="#">Controls &amp; UI</a>
-              <a href="#">Multi-image worlds</a>
-              <a href="#">Events</a>
-            </div>
-            <div class="doc-group">
-              <h6>Frameworks</h6>
-              <a href="#">Vanilla JS</a>
-              <a href="#">React</a>
-              <a href="#">Vue</a>
-              <a href="#">Svelte</a>
-              <a href="#">Solid</a>
-              <a href="#">Lit / Web Components</a>
-              <a href="#">Angular</a>
-              <a href="#">Electron</a>
-              <a href="#">Tauri</a>
-              <a href="#">Qt WebEngine</a>
-            </div>
-            <div class="doc-group">
-              <h6>API</h6>
-              <a href="#api">Viewer</a>
-              <a href="#">Viewport</a>
-              <a href="#">World</a>
-              <a href="#">TiledImage</a>
-              <a href="#">TileSource</a>
-              <a href="#">Overlay</a>
-              <a href="#">MouseTracker</a>
-              <a href="#">Events</a>
-              <a href="#">Options</a>
-            </div>
-            <div class="doc-group">
-              <h6>Migration</h6>
-              <a href="#">v5 → v6</a>
-              <a href="#">v3 → v4</a>
-              <a href="#">v2 → v3</a>
+            <div v-for="group in DOC_NAV" :key="group.label" class="doc-group">
+              <h6>{{ group.label }}</h6>
+              <template v-for="item in group.items" :key="item.title">
+                <a
+                  v-if="item.href"
+                  :href="item.href"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >{{ item.title }}</a>
+                <RouterLink
+                  v-else-if="item.path === '/docs'"
+                  to="/docs"
+                  class="active"
+                >{{ item.title }}</RouterLink>
+                <RouterLink
+                  v-else
+                  :to="item.path"
+                >{{ item.title }}</RouterLink>
+              </template>
             </div>
           </aside>
 
@@ -261,6 +232,7 @@ import TweaksPanel from '@/components/TweaksPanel.vue'
 import { TweakSection, TweakRadio, TweakColor } from '@/components/tweaks/TweakControls.vue'
 import { useAnimations } from '@/composables/useAnimations.js'
 import { useOSDVersion } from '@/composables/useOSDVersion.js'
+import { DOC_NAV } from '@/data/docs.js'
 
 const { tag } = useOSDVersion()
 
