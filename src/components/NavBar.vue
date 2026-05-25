@@ -17,6 +17,7 @@
         <RouterLink class="nav-link" to="/" :aria-current="route.path === '/' ? 'page' : undefined">Home</RouterLink>
         <RouterLink class="nav-link" to="/docs" :aria-current="route.path === '/docs' ? 'page' : undefined">Docs</RouterLink>
         <RouterLink class="nav-link" to="/examples" :aria-current="route.path === '/examples' ? 'page' : undefined">Examples</RouterLink>
+        <RouterLink class="nav-link" to="/playground" :aria-current="route.path === '/playground' ? 'page' : undefined">Playground</RouterLink>
         <RouterLink class="nav-link" to="/plugins" :aria-current="route.path === '/plugins' ? 'page' : undefined">Plugins</RouterLink>
         <RouterLink class="nav-link" to="/community" :aria-current="route.path === '/community' ? 'page' : undefined">Community</RouterLink>
       </div>
@@ -57,6 +58,7 @@
       <RouterLink class="nav-link" to="/" :aria-current="route.path === '/' ? 'page' : undefined" @click="mobileOpen = false">Home</RouterLink>
       <RouterLink class="nav-link" to="/docs" :aria-current="route.path === '/docs' ? 'page' : undefined" @click="mobileOpen = false">Docs</RouterLink>
       <RouterLink class="nav-link" to="/examples" :aria-current="route.path === '/examples' ? 'page' : undefined" @click="mobileOpen = false">Examples</RouterLink>
+      <RouterLink class="nav-link" to="/playground" :aria-current="route.path === '/playground' ? 'page' : undefined" @click="mobileOpen = false">Playground</RouterLink>
       <RouterLink class="nav-link" to="/plugins" :aria-current="route.path === '/plugins' ? 'page' : undefined" @click="mobileOpen = false">Plugins</RouterLink>
       <RouterLink class="nav-link" to="/community" :aria-current="route.path === '/community' ? 'page' : undefined" @click="mobileOpen = false">Community</RouterLink>
       <div class="nav-mobile-menu-foot">
