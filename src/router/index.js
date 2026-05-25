@@ -32,6 +32,11 @@ const routes = [
     meta: { title: 'Plugins — OpenSeadragon' }
   },
   {
+    path: '/demos',
+    component: () => import('../views/DemosView.vue'),
+    meta: { title: 'Demos — OpenSeadragon' }
+  },
+  {
     path: '/community',
     component: () => import('../views/CommunityView.vue'),
     meta: { title: 'Community — OpenSeadragon' }

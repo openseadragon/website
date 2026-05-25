@@ -29,63 +29,55 @@
       </div>
     </header>
 
-    <!-- FEATURED LIVE VIEWERS -->
+    <!-- FEATURED AUTHOR DEMOS -->
     <section class="section-tight">
       <div class="container">
         <div class="section-head" style="margin-bottom: 24px;">
           <div class="left">
-            <span class="eyebrow"><span class="dot"></span>FEATURED</span>
+            <span class="eyebrow"><span class="dot"></span>AUTHOR DEMOS</span>
             <h2 class="h-section">Live demos.</h2>
-            <p class="sub">Drag, scroll, pinch. These viewers are real — same code as the example pages.</p>
+            <p class="sub">Built by Ian Gilman, OSD's creator. Click inside each frame to interact.</p>
+          </div>
+          <div class="right">
+            <RouterLink to="/demos">All {{ CODEPENS.length }} demos →</RouterLink>
           </div>
         </div>
 
-        <div class="cases" id="featured-grid">
-          <article class="case-card" data-case-theme="art">
-            <div class="case-image">
-              <div class="case-osd" id="osd-feat-art" data-theme="art"></div>
-              <div class="case-osd-frame" aria-hidden="true">
-                <span class="corner tl"></span><span class="corner tr"></span>
-                <span class="corner bl"></span><span class="corner br"></span>
+        <div class="cases" id="featured-demos">
+          <button
+            v-for="pen in FEATURED_CODEPENS"
+            :key="pen.id"
+            class="case-card feat-thumb-card"
+            :style="{ '--hue': pen.hue }"
+            @click="activePen = pen"
+            :aria-label="`Open ${pen.title} in editor`"
+          >
+            <div class="case-image feat-thumb">
+              <img
+                :src="`https://codepen.io/iangilman/pen/${pen.id}/image/large.png`"
+                :alt="pen.title"
+                class="feat-thumb-img"
+                loading="lazy"
+                @error="e => e.target.style.display = 'none'"
+              />
+              <div class="feat-thumb-bg"></div>
+              <div class="feat-thumb-play">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
               </div>
-              <div class="case-chip"><span class="dot live"></span> LIVE</div>
+              <div class="case-chip">
+                <span class="dot live" style="background:var(--accent)"></span> EDIT
+              </div>
             </div>
             <div class="case-body">
-              <span class="num">01 / BASIC</span>
-              <h3 class="h-card">Single tiled image.</h3>
-              <p>Drop a <code>div</code>, point at a DZI, you're done. The smallest possible example.</p>
+              <span class="num">{{ pen.cat.toUpperCase() }}</span>
+              <h3 class="h-card">{{ pen.title }}</h3>
+              <p>{{ pen.desc }}</p>
             </div>
-          </article>
-          <article class="case-card" data-case-theme="micro">
-            <div class="case-image">
-              <div class="case-osd" id="osd-feat-micro" data-theme="micro"></div>
-              <div class="case-osd-frame" aria-hidden="true">
-                <span class="corner tl"></span><span class="corner tr"></span>
-                <span class="corner bl"></span><span class="corner br"></span>
-              </div>
-              <div class="case-chip"><span class="dot live"></span> LIVE</div>
-            </div>
-            <div class="case-body">
-              <span class="num">02 / OVERLAYS</span>
-              <h3 class="h-card">HTML + SVG overlays.</h3>
-              <p>Anchor any DOM node in image space. Tracks pan, zoom and rotation perfectly.</p>
-            </div>
-          </article>
-          <article class="case-card" data-case-theme="maps">
-            <div class="case-image">
-              <div class="case-osd" id="osd-feat-maps" data-theme="maps"></div>
-              <div class="case-osd-frame" aria-hidden="true">
-                <span class="corner tl"></span><span class="corner tr"></span>
-                <span class="corner bl"></span><span class="corner br"></span>
-              </div>
-              <div class="case-chip"><span class="dot live"></span> LIVE</div>
-            </div>
-            <div class="case-body">
-              <span class="num">03 / SEQUENCE</span>
-              <h3 class="h-card">Sequence mode slideshow.</h3>
-              <p>Step through a collection of images with smooth, pre-fetched transitions.</p>
-            </div>
-          </article>
+          </button>
+        </div>
+
+        <div class="demos-cta">
+          <RouterLink to="/demos" class="btn btn-ghost">View all {{ CODEPENS.length }} author demos →</RouterLink>
         </div>
       </div>
     </section>
@@ -135,27 +127,30 @@
 
     <SiteFooter />
 
+    <!-- PEN EDITOR -->
+    <PenEditor :pen="activePen" @close="activePen = null" />
+
     <!-- TWEAKS PANEL -->
     <TweaksPanel title="Tweaks">
       <TweakSection label="Theme" />
       <TweakRadio label="Mode" v-model="tweaks.theme" :options="['dark', 'light']" />
       <TweakColor label="Accent" v-model="tweaks._accentArr" :options="accentOptions" />
-      <TweakSection label="Demo image" />
-      <TweakRadio label="Use case" v-model="tweaks.frame" :options="['art', 'micro', 'maps']" />
     </TweaksPanel>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { reactive, ref, computed, watch, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
 import SiteFooter from '@/components/SiteFooter.vue'
 import TweaksPanel from '@/components/TweaksPanel.vue'
+import PenEditor from '@/components/PenEditor.vue'
 import { TweakSection, TweakRadio, TweakColor } from '@/components/tweaks/TweakControls.vue'
 import { useParticles } from '@/composables/useParticles.js'
 import { useAnimations, useCursorSpot } from '@/composables/useAnimations.js'
 import { EXAMPLES_DATA } from '@/data/examples.js'
+import { CODEPENS, FEATURED_CODEPENS } from '@/data/codepens.js'
 
 const ACCENT_OPTIONS = [
   ['#67d6ee', '#0f1922', '#f3fbfd'],
@@ -169,21 +164,19 @@ const ACCENT_COLOR_MAP = { aqua: ACCENT_OPTIONS[0], coral: ACCENT_OPTIONS[1], li
 const html = document.documentElement
 const savedTheme = localStorage.getItem('osd-theme') || html.getAttribute('data-theme') || 'dark'
 const savedAccent = html.getAttribute('data-accent') || 'aqua'
-const savedFrame = html.getAttribute('data-frame') || 'art'
 
 const tweaks = reactive({
   theme: savedTheme,
   accent: savedAccent,
-  frame: savedFrame,
   _accentArr: ACCENT_COLOR_MAP[savedAccent] || ACCENT_OPTIONS[0]
 })
 
 const accentOptions = ACCENT_OPTIONS
 const activeFilter = ref('All')
+const activePen = ref(null)
 
 const categories = computed(() => [...new Set(EXAMPLES_DATA.map(e => e.cat))])
 const categoryCount = computed(() => categories.value.length)
-
 const filteredExamples = computed(() =>
   activeFilter.value === 'All'
     ? EXAMPLES_DATA
@@ -201,98 +194,70 @@ watch(() => tweaks._accentArr, (v) => {
   html.setAttribute('data-accent', name)
 })
 
-watch(() => tweaks.frame, (v) => {
-  html.setAttribute('data-frame', v)
-  rebuildViewers()
-})
-
-const viewers = []
-
-function makeTileSource(theme) {
-  const W = { art: 3556, micro: 4096, maps: 8192 }[theme] || 3556
-  const H = { art: 4800, micro: 4096, maps: 4096 }[theme] || 4800
-  const tileSize = 256
-  return {
-    width: W, height: H,
-    tileWidth: tileSize, tileHeight: tileSize,
-    minLevel: 0,
-    maxLevel: Math.ceil(Math.log2(Math.max(W, H))),
-    getTileUrl(level, x, y) { return null },
-    createTileCache() {},
-    destroyTileCache() {},
-    getImageInfo() { return { width: W, height: H } },
-    getTileAtPoint(level, point) { return { x: 0, y: 0 } },
-    tileExists() { return false },
-    getTileAjaxHeaders() { return {} }
-  }
-}
-
-function paintCanvas(canvas, theme, frame) {
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return
-  const w = canvas.width, h = canvas.height
-  const isDark = document.documentElement.getAttribute('data-theme') !== 'light'
-  const PALETTES = {
-    art:   { bg: isDark ? '#0f1922' : '#f3fbfd', fg: isDark ? '#67d6ee' : '#0a7fa0' },
-    micro: { bg: isDark ? '#0e1310' : '#f2faf3', fg: isDark ? '#5dd68b' : '#1a7a3a' },
-    maps:  { bg: isDark ? '#16131e' : '#f5f1fb', fg: isDark ? '#b59afd' : '#6b4fc8' }
-  }
-  const pal = PALETTES[frame || theme] || PALETTES.art
-  ctx.fillStyle = pal.bg
-  ctx.fillRect(0, 0, w, h)
-  ctx.strokeStyle = pal.fg
-  ctx.lineWidth = 0.5
-  ctx.globalAlpha = 0.25
-  const step = 32
-  for (let x = 0; x < w; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke() }
-  for (let y = 0; y < h; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke() }
-  ctx.globalAlpha = 0.7
-  const cx = w / 2, cy = h / 2
-  ctx.strokeStyle = pal.fg
-  ctx.lineWidth = 1.5
-  ctx.beginPath(); ctx.moveTo(cx - 40, cy); ctx.lineTo(cx + 40, cy); ctx.stroke()
-  ctx.beginPath(); ctx.moveTo(cx, cy - 40); ctx.lineTo(cx, cy + 40); ctx.stroke()
-  ctx.beginPath(); ctx.arc(cx, cy, 20, 0, Math.PI * 2); ctx.stroke()
-  ctx.globalAlpha = 1
-}
-
-function initCaseViewer(id, theme) {
-  const OSD = window.OpenSeadragon
-  if (!OSD) return null
-  const el = document.getElementById(id)
-  if (!el) return null
-  const canvas = document.createElement('canvas')
-  canvas.width = el.offsetWidth || 340
-  canvas.height = el.offsetHeight || 220
-  canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none'
-  el.style.position = 'relative'
-  el.appendChild(canvas)
-  paintCanvas(canvas, theme, tweaks.frame)
-  return { canvas, theme, destroy() { canvas.remove() } }
-}
-
-function rebuildViewers() {
-  viewers.forEach(v => v && v.destroy && v.destroy())
-  viewers.length = 0
-  const themes = ['art', 'micro', 'maps']
-  const ids = ['osd-feat-art', 'osd-feat-micro', 'osd-feat-maps']
-  themes.forEach((theme, i) => {
-    const v = initCaseViewer(ids[i], theme)
-    if (v) viewers.push(v)
-  })
-}
-
 useParticles('tile-particles', '.page-hero')
 useAnimations()
 useCursorSpot()
 
 onMounted(() => {
   document.title = 'Examples — OpenSeadragon'
-  rebuildViewers()
-})
-
-onUnmounted(() => {
-  viewers.forEach(v => v && v.destroy && v.destroy())
-  viewers.length = 0
 })
 </script>
+
+<style scoped>
+.feat-thumb-card {
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  background: var(--ink-2);
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+.feat-thumb-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 8px 32px oklch(from var(--accent, #67d6ee) l c h / 0.15);
+}
+
+.feat-thumb {
+  position: relative;
+  background: oklch(0.14 0.03 calc(var(--hue, 200)));
+  min-height: 220px;
+}
+.feat-thumb-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 40%, oklch(0.35 0.12 calc(var(--hue, 200))) 0%, transparent 65%),
+    oklch(0.12 0.02 calc(var(--hue, 200)));
+  opacity: 0.8;
+}
+.feat-thumb-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  transition: transform 300ms ease;
+}
+.feat-thumb-card:hover .feat-thumb-img { transform: scale(1.04); }
+
+.feat-thumb-play {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.4);
+  transition: opacity 200ms ease;
+  color: #fff;
+}
+.feat-thumb-card:hover .feat-thumb-play { opacity: 1; }
+
+.demos-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+</style>
