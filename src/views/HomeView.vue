@@ -261,12 +261,39 @@
         <div class="section-head">
           <div class="left">
             <span class="eyebrow"><span class="dot"></span>EXAMPLES</span>
-            <h2 class="h-section">Hover. Watch each card zoom into itself.</h2>
-            <p class="sub">A live catalog of patterns — every example is a working HTML page with annotated source.</p>
+            <h2 class="h-section">Live demos, edit in the browser.</h2>
+            <p class="sub">Click any card to open the live editor — tweak the code and see it update in real time.</p>
           </div>
-          <div class="right"><RouterLink to="/examples">All 38 examples →</RouterLink></div>
+          <div class="right"><RouterLink to="/examples">All {{ CODEPENS.length }} demos →</RouterLink></div>
         </div>
-        <div class="examples-grid" id="examples-grid"></div>
+        <div class="home-demos-grid">
+          <button
+            v-for="pen in CODEPENS.slice(0, 6)"
+            :key="pen.id"
+            class="home-demo-card"
+            :style="{ '--hue': pen.hue }"
+            @click="activePen = pen"
+            :aria-label="`Open ${pen.title} in editor`"
+          >
+            <div class="home-demo-thumb">
+              <img
+                :src="`https://codepen.io/iangilman/pen/${pen.id}/image/large.png`"
+                :alt="pen.title"
+                class="home-demo-img"
+                loading="lazy"
+                @error="e => e.target.style.display = 'none'"
+              />
+              <div class="home-demo-bg"></div>
+              <div class="home-demo-play">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </div>
+            <div class="home-demo-meta">
+              <span class="home-demo-cat">{{ pen.cat }}</span>
+              <b>{{ pen.title }}</b>
+            </div>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -320,6 +347,8 @@
       </div>
     </section>
 
+    <PenEditor :pen="activePen" @close="activePen = null" />
+
     <SiteFooter />
 
     <!-- Tweaks panel -->
@@ -342,14 +371,17 @@ import { ref, reactive, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import NavBar from '../components/NavBar.vue'
 import SiteFooter from '../components/SiteFooter.vue'
+import PenEditor from '../components/PenEditor.vue'
 import TweaksPanel from '../components/TweaksPanel.vue'
 import { TweakRadio, TweakColor } from '../components/tweaks/TweakControls.vue'
 import { useParticles } from '../composables/useParticles.js'
 import { usePluginsMap } from '../composables/usePluginsMap.js'
 import { useAnimations, useCursorSpot, useCopyButtons, useCommunityTilt } from '../composables/useAnimations.js'
 import { useOSDVersion } from '../composables/useOSDVersion.js'
+import { CODEPENS } from '../data/codepens.js'
 
 // ── Reactive display state ──
+const activePen = ref(null)
 const tileCount = ref('—')
 const zoomReadout = ref('1.00×')
 const srcName = ref('Highsmith Archive · Library of Congress')
@@ -534,73 +566,6 @@ function initSecondaryViewer() {
   })
 }
 
-function paintExampleThumb(canvas, hue, level) {
-  const w = canvas.width = 480, h = canvas.height = 360
-  const ctx = canvas.getContext('2d')
-  ctx.fillStyle = `oklch(0.18 0.02 240)`; ctx.fillRect(0, 0, w, h)
-  const cx = w * 0.55, cy = h * 0.5, r = w * 0.5
-  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
-  grad.addColorStop(0, `hsla(${hue}, 70%, 50%, 0.9)`)
-  grad.addColorStop(0.4, `hsla(${(hue+30)%360}, 60%, 32%, 0.7)`)
-  grad.addColorStop(1, `hsla(${hue}, 50%, 10%, 0.2)`)
-  ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h)
-  ctx.lineCap = 'round'
-  for (let i = 0; i < 24 + level*4; i++) {
-    const s = (i * 9301 + level * 7919) % 233280 / 233280
-    const s2 = ((i + 7) * 49297) % 233280 / 233280
-    ctx.strokeStyle = `hsla(${(hue + i*8) % 360}, ${60 + s*30}%, ${30 + s2*40}%, ${0.3 + s*0.5})`
-    ctx.lineWidth = 1 + s2 * 5; ctx.beginPath()
-    ctx.moveTo(s * w, s2 * h); ctx.bezierCurveTo(s*w+80, s2*h-40, s2*w-60, s*h+70, s2*w, s*h); ctx.stroke()
-  }
-}
-
-function buildExamples() {
-  const grid = document.getElementById('examples-grid')
-  if (!grid) return
-  const items = [
-    { tag: 'BASIC', title: 'Single tiled image', live: 'art' },
-    { tag: 'IIIF', title: 'IIIF image service' },
-    { tag: 'OVERLAYS', title: 'HTML & SVG overlays', live: 'maps' },
-    { tag: 'SEQUENCE', title: 'Sequence mode slideshow' },
-    { tag: 'COLLECTION', title: 'Collection mode grid' },
-    { tag: 'CUSTOM CTRLS', title: 'Custom controls UI' },
-    { tag: 'ANNOTATE', title: 'Annotation overlay' },
-    { tag: 'COMPARE', title: 'Before / after curtain' },
-    { tag: 'WEBGL', title: 'WebGL drawer + filters' }
-  ]
-  grid.innerHTML = items.map((it, i) => {
-    const hue = (i * 41 + 200) % 360
-    if (it.live) {
-      return `<a class="example-card example-card-live" href="#"><div class="example-thumb"><div class="example-osd" id="osd-ex-${i}" data-theme="${it.live}"></div><div class="case-osd-frame" aria-hidden="true"><span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span></div><div class="example-chip"><span class="dot live"></span> LIVE</div></div><div class="example-meta"><b>${it.title}</b><span class="tag">${it.tag}</span></div></a>`
-    }
-    return `<a class="example-card" href="#"><div class="example-thumb"><div class="img"><canvas data-hue="${hue}" data-level="${i}" style="width:100%;height:100%;display:block"></canvas></div><div class="reticle"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="22" cy="22" r="14"/><path d="M22 4v6M22 34v6M4 22h6M34 22h6"/><path d="M22 18v8M18 22h8"/></svg></div></div><div class="example-meta"><b>${it.title}</b><span class="tag">${it.tag}</span></div></a>`
-  }).join('')
-  grid.querySelectorAll('canvas[data-hue]').forEach(c => paintExampleThumb(c, +c.dataset.hue, +c.dataset.level))
-  items.forEach((it, i) => {
-    if (!it.live) return
-    const mount = document.getElementById(`osd-ex-${i}`)
-    if (!mount || !window.OpenSeadragon) return
-    const v = window.OpenSeadragon({
-      element: mount,
-      prefixUrl: prefixUrl.value,
-      tileSources: getDemoTileSource(it.live),
-      showNavigator: false, showNavigationControl: false, mouseNavEnabled: false,
-      gestureSettingsMouse: { scrollToZoom: false, clickToZoom: false, dblClickToZoom: false, dragToPan: false, flickEnabled: false },
-      gestureSettingsTouch: { scrollToZoom: false, clickToZoom: false, dblClickToZoom: false, dragToPan: false, flickEnabled: false },
-      gestureSettingsPen: { scrollToZoom: false, clickToZoom: false, dblClickToZoom: false, dragToPan: false, flickEnabled: false },
-      gestureSettingsUnknown: { scrollToZoom: false, clickToZoom: false, dblClickToZoom: false, dragToPan: false, flickEnabled: false },
-      animationTime: 6, springStiffness: 4, blendTime: 0.2, immediateRender: false,
-      minZoomImageRatio: 0.8, maxZoomPixelRatio: 5, visibilityRatio: 1, constrainDuringPan: true, background: '#000'
-    })
-    v.addHandler('open', () => runTour(v))
-    miniViewers.push(v)
-    const card = mount.closest('.example-card')
-    if (card && 'IntersectionObserver' in window) {
-      const io = new IntersectionObserver(entries => { entries.forEach(e => { v._osdPaused = !e.isIntersecting }) }, { threshold: 0.1 })
-      io.observe(card)
-    }
-  })
-}
 
 function rebuildViewersForTheme(theme) {
   currentTheme = theme
@@ -613,7 +578,6 @@ function rebuildViewersForTheme(theme) {
 }
 
 onMounted(() => {
-  buildExamples()
   initHeroViewer()
   initSecondaryViewer()
   miniViewers.push(initCaseViewer('osd-case-art', 'art'))

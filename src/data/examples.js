@@ -40,9 +40,9 @@ export const EXAMPLES_DATA = [
 ]
 
 export const HOME_EXAMPLES = [
-  { tag: 'BASIC',         title: 'Single tiled image',  live: 'art' },
+  { tag: 'BASIC',         title: 'Single tiled image' },
   { tag: 'IIIF',          title: 'IIIF image service' },
-  { tag: 'OVERLAYS',      title: 'HTML & SVG overlays', live: 'maps' },
+  { tag: 'OVERLAYS',      title: 'HTML & SVG overlays' },
   { tag: 'SEQUENCE',      title: 'Sequence mode slideshow' },
   { tag: 'COLLECTION',    title: 'Collection mode grid' },
   { tag: 'CUSTOM CTRLS',  title: 'Custom controls UI' },
