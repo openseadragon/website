@@ -274,29 +274,19 @@ const TILE_SOURCES = [
     key: 'art',
     label: 'Highsmith Archive',
     sub: 'DZI · 7026×9221 px',
-    thumb: '/img/demo-art.jpg',
     src: 'https://openseadragon.github.io/example-images/highsmith/highsmith.dzi',
   },
   {
     key: 'micro',
     label: 'Medical Slide',
     sub: 'IIIF · whole-slide',
-    thumb: '/img/demo-micro.jpg',
     src: 'https://iiif.wellcomecollection.org/image/B0009508/info.json',
   },
   {
     key: 'maps',
     label: 'Survey Map',
     sub: 'IIIF · historical',
-    thumb: '/img/demo-maps.jpg',
     src: 'https://iiif.wellcomecollection.org/image/L0072917/info.json',
-  },
-  {
-    key: 'simple',
-    label: 'Local Image',
-    sub: 'JPEG · static file',
-    thumb: '/img/demo-art.jpg',
-    src: { type: 'image', url: '/img/demo-art.jpg' },
   },
 ]
 
