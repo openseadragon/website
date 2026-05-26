@@ -130,78 +130,68 @@
             <span class="eyebrow"><span class="dot"></span>RECENTLY</span>
             <h2 class="h-section">What's happening, this week.</h2>
           </div>
-          <div class="right"><a href="#">Full activity on GitHub →</a></div>
+          <div class="right"><a href="https://github.com/openseadragon/openseadragon/commits/main" target="_blank" rel="noopener">Full activity on GitHub →</a></div>
         </div>
 
         <div class="activity-feed">
           <div class="activity-col">
             <h4>Commits &amp; releases</h4>
             <ul class="activity-list">
-              <li class="activity-item">
-                <span class="when">3 days ago</span>
-                <span class="what"><span class="who">iangilman</span> released <code>{{ tag }}</code> — bug fixes for WebGL drawer on Safari + tile-loaded memory leak</span>
-                <span class="tag release">release</span>
-              </li>
-              <li class="activity-item">
-                <span class="when">5 days ago</span>
-                <span class="what"><span class="who">msalsbery</span> merged <code>#2891</code> — async event handlers can now return Promises</span>
-                <span class="tag commit">commit</span>
-              </li>
-              <li class="activity-item">
-                <span class="when">1w ago</span>
-                <span class="what"><span class="who">pearcetm</span> committed cache-record SimpleCache for tile data persistence across drawer swaps</span>
-                <span class="tag commit">commit</span>
-              </li>
-              <li class="activity-item">
-                <span class="when">2w ago</span>
-                <span class="what"><span class="who">woodchuck</span> fixed navigator cleanup when in custom location</span>
-                <span class="tag commit">commit</span>
-              </li>
-              <li class="activity-item">
-                <span class="when">3w ago</span>
-                <span class="what"><span class="who">iangilman</span> released <code>v6.0.1</code> — patch for the IIIF 3.0 image profile shim</span>
-                <span class="tag release">release</span>
-              </li>
-              <li class="activity-item">
-                <span class="when">1mo ago</span>
-                <span class="what"><span class="who">JoFrMueller</span> improved destruction cleanup to avoid memory leaks on hot-reload</span>
-                <span class="tag commit">commit</span>
-              </li>
+              <template v-if="commitsFeed && commitsFeed.length">
+                <li v-for="item in commitsFeed" :key="item.url" class="activity-item">
+                  <span class="when">{{ relativeTime(item.date) }}</span>
+                  <span class="what">
+                    <a :href="`https://github.com/${item.who}`" class="who" target="_blank" rel="noopener">{{ item.who }}</a>
+                    <template v-if="item.type === 'release'">
+                      released <a :href="item.url" target="_blank" rel="noopener"><code>{{ item.tag }}</code></a> — {{ item.message }}
+                    </template>
+                    <template v-else-if="item.pr">
+                      merged <a :href="item.url" target="_blank" rel="noopener"><code>#{{ item.pr }}</code></a> — {{ item.message }}
+                    </template>
+                    <template v-else>
+                      <a :href="item.url" target="_blank" rel="noopener">{{ item.message }}</a>
+                    </template>
+                  </span>
+                  <span :class="['tag', item.type]">{{ item.type }}</span>
+                </li>
+              </template>
+              <template v-else-if="!loading">
+                <li class="activity-item"><span class="what">No recent activity found.</span></li>
+              </template>
+              <template v-else>
+                <li v-for="i in 6" :key="i" class="activity-item activity-item--skeleton">
+                  <span class="when skeleton-line" style="width:56px"></span>
+                  <span class="what skeleton-line" style="width:70%"></span>
+                  <span class="tag skeleton-line" style="width:52px"></span>
+                </li>
+              </template>
             </ul>
           </div>
           <div class="activity-col">
             <h4>Open issues &amp; PRs</h4>
             <ul class="activity-list">
-              <li class="activity-item">
-                <span class="when">today</span>
-                <span class="what"><span class="who">dao251</span> opened <code>#2906</code> — proposal: native annotation primitives</span>
-                <span class="tag pr">enhancement</span>
-              </li>
-              <li class="activity-item">
-                <span class="when">2 days ago</span>
-                <span class="what"><span class="who">jeffschuler</span> asked <code>#2897</code> — how to coordinate OSD inside React Strict Mode</span>
-                <span class="tag issue">question</span>
-              </li>
-              <li class="activity-item">
-                <span class="when">1w ago</span>
-                <span class="what"><span class="who">community</span> opened PR <code>#2901</code> — improve a11y for keyboard-only navigation</span>
-                <span class="tag pr">PR</span>
-              </li>
-              <li class="activity-item">
-                <span class="when">2w ago</span>
-                <span class="what"><span class="who">Aiosa</span> asked <code>#2864</code> — multi-image worlds + custom drawer interaction</span>
-                <span class="tag issue">question</span>
-              </li>
-              <li class="activity-item">
-                <span class="when">3w ago</span>
-                <span class="what"><span class="who">acdamiani</span> reported <code>#2836</code> — Safari pinch-zoom regression on iPad mini</span>
-                <span class="tag issue">bug</span>
-              </li>
-              <li class="activity-item">
-                <span class="when">1mo ago</span>
-                <span class="what"><span class="who">mathiasstocker</span> proposed <code>#2830</code> — exposing tile prefetch policy</span>
-                <span class="tag pr">enhancement</span>
-              </li>
+              <template v-if="issuesFeed && issuesFeed.length">
+                <li v-for="item in issuesFeed" :key="item.url" class="activity-item">
+                  <span class="when">{{ relativeTime(item.date) }}</span>
+                  <span class="what">
+                    <a :href="`https://github.com/${item.who}`" class="who" target="_blank" rel="noopener">{{ item.who }}</a>
+                    {{ item.isPR ? 'opened PR' : 'opened' }}
+                    <a :href="item.url" target="_blank" rel="noopener"><code>#{{ item.number }}</code></a>
+                    — {{ item.title }}
+                  </span>
+                  <span :class="['tag', item.type]">{{ item.tag }}</span>
+                </li>
+              </template>
+              <template v-else-if="!loading">
+                <li class="activity-item"><span class="what">No open issues found.</span></li>
+              </template>
+              <template v-else>
+                <li v-for="i in 6" :key="i" class="activity-item activity-item--skeleton">
+                  <span class="when skeleton-line" style="width:56px"></span>
+                  <span class="what skeleton-line" style="width:70%"></span>
+                  <span class="tag skeleton-line" style="width:72px"></span>
+                </li>
+              </template>
             </ul>
           </div>
         </div>
@@ -328,12 +318,14 @@ import { reactive, ref, watch, onMounted } from 'vue'
 import NavBar from '@/components/NavBar.vue'
 import SiteFooter from '@/components/SiteFooter.vue'
 import { useOSDVersion } from '@/composables/useOSDVersion.js'
+import { useGitHubActivity } from '@/composables/useGitHubActivity.js'
 import TweaksPanel from '@/components/TweaksPanel.vue'
 import { TweakSection, TweakRadio, TweakColor } from '@/components/tweaks/TweakControls.vue'
 import { useParticles } from '@/composables/useParticles.js'
 import { useAnimations, useCursorSpot, useCommunityTilt } from '@/composables/useAnimations.js'
 
 const { tag } = useOSDVersion()
+const { commitsFeed, issuesFeed, loading, relativeTime } = useGitHubActivity()
 
 const ACCENT_OPTIONS = [
   ['#67d6ee', '#0f1922', '#f3fbfd'],

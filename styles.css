@@ -2455,6 +2455,19 @@ body.hero-centered .lede { text-align: center; }
 .activity-item .tag.release { color: var(--accent); border-color: color-mix(in oklch, var(--accent) 30%, transparent); }
 .activity-item .tag.pr { color: oklch(0.85 0.12 290); border-color: color-mix(in oklch, oklch(0.85 0.12 290) 30%, transparent); }
 .activity-item .tag.issue { color: oklch(0.82 0.14 60); border-color: color-mix(in oklch, oklch(0.82 0.14 60) 30%, transparent); }
+.activity-item .what a { color: inherit; text-decoration: none; }
+.activity-item .what a:hover { color: var(--accent); }
+.activity-item .who { color: var(--accent); font-weight: 500; text-decoration: none; }
+.activity-item .who:hover { text-decoration: underline; }
+.skeleton-line {
+  display: inline-block;
+  height: 12px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--ink-2) 25%, var(--ink-1) 50%, var(--ink-2) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+@keyframes skeleton-shimmer { to { background-position: -200% 0; } }
 @media (max-width: 720px) {
   .activity-feed { grid-template-columns: 1fr; }
 }
