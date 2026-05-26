@@ -61,62 +61,62 @@
             <p class="sub">A small sample. The actual list is in the hundreds — museums, hospitals, mapping
               agencies, and a few satellites.</p>
           </div>
-          <div class="right"><a href="#">Submit your project →</a></div>
+          <div class="right"><a href="https://openseadragon.github.io/examples/in-the-wild/" target="_blank" rel="noopener">Submit your project →</a></div>
         </div>
 
         <div class="show-tell">
-          <a class="show-tell-card" href="#">
-            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.42 0.07 30);"><span class="st-chip">PAINTING · 28K PX</span></div>
+          <a class="show-tell-card" href="http://www.loc.gov/maps" target="_blank" rel="noopener">
+            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.42 0.07 80);"><span class="st-chip">MAPS · HISTORICAL</span></div>
             <div class="show-tell-body">
-              <span class="org">Rijksmuseum · 2022</span>
-              <b>The Night Watch, at 717-gigapixel</b>
-              <p>The largest deep-zoom of a Rembrandt ever produced. OSD powers the public viewer + zoom-link campaigns.</p>
-              <div class="stats"><span><b>717GP</b> source</span><span><b>14</b> levels</span><span><b>3.2M</b> views/yr</span></div>
+              <span class="org">Library of Congress</span>
+              <b>Map Division digital collection</b>
+              <p>America's national library serves its digitized map collection via OSD — from Civil War surveys to panoramic city views.</p>
+              <div class="stats"><span><b>Geography</b> division</span><span><b>300 DPI</b> scans</span><span><b>multi-era</b></span></div>
             </div>
           </a>
-          <a class="show-tell-card" href="#">
-            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.45 0.06 290);"><span class="st-chip">WHOLE-SLIDE · 120K PX</span></div>
+          <a class="show-tell-card" href="http://cancer.digitalslidearchive.net/" target="_blank" rel="noopener">
+            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.45 0.06 170);"><span class="st-chip">WHOLE-SLIDE · PATHOLOGY</span></div>
             <div class="show-tell-body">
-              <span class="org">Karolinska Institute · 2024</span>
-              <b>Pathology cohort viewer</b>
-              <p>20,000 H&amp;E slides across a melanoma study. Annotations sync to a research DB via the SVG-overlay plugin.</p>
-              <div class="stats"><span><b>20K</b> slides</span><span><b>9 GPU</b> drawers</span><span><b>40×</b> mag</span></div>
+              <span class="org">Digital Slide Archive</span>
+              <b>Cancer pathology slide viewer</b>
+              <p>Whole-slide pathology images from TCGA cancer studies. Pan/zoom across H&amp;E-stained tissue at cellular resolution.</p>
+              <div class="stats"><span><b>TCGA</b> data</span><span><b>H&amp;E</b> stain</span><span><b>multi-cancer</b></span></div>
             </div>
           </a>
-          <a class="show-tell-card" href="#">
-            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.45 0.07 170);"><span class="st-chip">TILE PYRAMID · 14 LEVELS</span></div>
+          <a class="show-tell-card" href="http://www.proteinatlas.org/" target="_blank" rel="noopener">
+            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.42 0.06 290);"><span class="st-chip">SCIENTIFIC · MICROSCOPY</span></div>
             <div class="show-tell-body">
-              <span class="org">NASA JPL · 2021</span>
-              <b>Mars HiRISE composite browser</b>
-              <p>Stitched HiRISE composites delivered as DZI. Pan/zoom across the entire planet at sub-meter resolution.</p>
-              <div class="stats"><span><b>1.4PB</b> source</span><span><b>3M</b> tiles</span><span><b>0.25m</b> /px</span></div>
+              <span class="org">Human Protein Atlas</span>
+              <b>Protein expression image browser</b>
+              <p>A comprehensive map of all human proteins in cells, tissues and organs — IHC microscopy images at full resolution.</p>
+              <div class="stats"><span><b>26K</b> proteins</span><span><b>IHC</b> staining</span><span><b>44</b> tissue types</span></div>
             </div>
           </a>
-          <a class="show-tell-card" href="#">
-            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.42 0.07 80);"><span class="st-chip">MANUSCRIPT · 18K PX</span></div>
+          <a class="show-tell-card" href="https://www.artic.edu/" target="_blank" rel="noopener">
+            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.42 0.07 30);"><span class="st-chip">ART · HIGH-RES</span></div>
             <div class="show-tell-body">
-              <span class="org">Bodleian Library · 2019</span>
-              <b>Medieval manuscript digital reading room</b>
-              <p>14,000 manuscripts in IIIF. Folio-by-folio sequence mode with collation annotations.</p>
-              <div class="stats"><span><b>14K</b> mss</span><span><b>IIIF</b> 3.0</span><span><b>92</b> instances</span></div>
+              <span class="org">Art Institute of Chicago</span>
+              <b>Online collection viewer</b>
+              <p>One of the largest art museums in the US, delivering deep-zoom views of artworks for remote inspection and scholarship.</p>
+              <div class="stats"><span><b>300K+</b> objects</span><span><b>open access</b></span><span><b>CC0</b> images</span></div>
             </div>
           </a>
-          <a class="show-tell-card" href="#">
-            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.42 0.06 240);"><span class="st-chip">ASTRO · 460K PX</span></div>
+          <a class="show-tell-card" href="http://map.projectzomboid.com/" target="_blank" rel="noopener">
+            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.40 0.06 140);"><span class="st-chip">GAMING · TILE MAP</span></div>
             <div class="show-tell-body">
-              <span class="org">Vera C. Rubin Observatory · 2025</span>
-              <b>LSST night-by-night browser</b>
-              <p>Full-sky time-domain survey. OSD multi-image worlds animate a 10-year cadence on demand.</p>
-              <div class="stats"><span><b>2.4PB</b> /yr</span><span><b>120k</b> nights</span><span><b>WebGL</b> drawer</span></div>
+              <span class="org">Project Zomboid Community</span>
+              <b>Interactive world map</b>
+              <p>Community-built tile map viewer for the survival game. OSD handles pan/zoom across the entire hand-crafted game world.</p>
+              <div class="stats"><span><b>open-world</b></span><span><b>tile-based</b></span><span><b>community</b></span></div>
             </div>
           </a>
-          <a class="show-tell-card" href="#">
-            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.42 0.07 320);"><span class="st-chip">MAPS · 32K × 24K</span></div>
+          <a class="show-tell-card" href="https://wellcomecollection.org/works" target="_blank" rel="noopener">
+            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.42 0.07 240);"><span class="st-chip">HERITAGE · IIIF</span></div>
             <div class="show-tell-body">
-              <span class="org">British Antarctic Survey · 2023</span>
-              <b>Continental ice-sheet atlas</b>
-              <p>Survey sheets digitized at 600 DPI. Custom OSM-style source for SCAR coordinate system.</p>
-              <div class="stats"><span><b>740</b> sheets</span><span><b>SCAR</b> CRS</span><span><b>14</b> levels</span></div>
+              <span class="org">Wellcome Collection</span>
+              <b>Digital library browser</b>
+              <p>London's free museum and library for the history of medicine. Hundreds of thousands of images spanning five centuries.</p>
+              <div class="stats"><span><b>45K+</b> works</span><span><b>IIIF</b> 3.0</span><span><b>5 centuries</b></span></div>
             </div>
           </a>
         </div>
@@ -219,22 +219,37 @@
           </div>
         </div>
         <div class="community">
-          <a class="community-card" href="#">
+          <a class="community-card" href="https://github.com/openseadragon/openseadragon/discussions" target="_blank" rel="noopener">
             <b>GitHub Discussions</b>
             <p>Architecture questions, feature debate, and the long tail of release notes.</p>
             <span class="more">github.com/openseadragon →</span>
           </a>
-          <a class="community-card" href="#">
+          <a class="community-card" href="https://stackoverflow.com/questions/tagged/openseadragon" target="_blank" rel="noopener">
             <b>Stack Overflow</b>
             <p>1,400+ tagged questions. Common gotchas already answered.</p>
             <span class="more">tag · openseadragon →</span>
           </a>
-          <a class="community-card" href="#">
+          <a class="community-card" href="https://discord.gg/Ygwap8UrGC" target="_blank" rel="noopener">
             <b>Discord</b>
             <p>Real-time chat with maintainers and users — IIIF interop, museum implementations, custom tile servers.</p>
             <span class="more">join the server →</span>
           </a>
-          <a class="community-card" href="#">
+          <a class="community-card" href="https://twitter.com/openseadragon" target="_blank" rel="noopener">
+            <b>Twitter / X</b>
+            <p>Announcements, release highlights, and the occasional deep-zoom curiosity.</p>
+            <span class="more">@openseadragon →</span>
+          </a>
+          <a class="community-card" href="https://bsky.app/profile/openseadragon.bsky.social" target="_blank" rel="noopener">
+            <b>Bluesky</b>
+            <p>The newer home for OSD updates and community conversation on the open web.</p>
+            <span class="more">@openseadragon.bsky.social →</span>
+          </a>
+          <a class="community-card" href="https://www.reddit.com/r/openseadragon/" target="_blank" rel="noopener">
+            <b>Reddit</b>
+            <p>Community posts, project showcases, and long-form how-to threads.</p>
+            <span class="more">r/openseadragon →</span>
+          </a>
+          <a class="community-card" href="https://www.newline.co/" target="_blank" rel="noopener">
             <b>Newline course</b>
             <p>The official deep-dive by Ian Gilman. Coordinate systems, animation, plugins.</p>
             <span class="more">newline.co →</span>
