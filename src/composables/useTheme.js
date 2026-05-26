@@ -1,8 +1,14 @@
 import { ref, watch } from 'vue'
 
-const theme = ref(
-  (() => { try { return localStorage.getItem('osd-theme') || 'dark' } catch { return 'dark' } })()
-)
+function getInitialTheme() {
+  try {
+    const stored = localStorage.getItem('osd-theme')
+    if (stored) return stored
+  } catch {}
+  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+}
+
+const theme = ref(getInitialTheme())
 
 export function useTheme() {
   watch(theme, (val) => {
