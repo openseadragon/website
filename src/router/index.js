@@ -45,6 +45,11 @@ const routes = [
     path: '/community',
     component: () => import('../views/CommunityView.vue'),
     meta: { title: 'Community — OpenSeadragon' }
+  },
+  {
+    path: '/in-the-wild',
+    component: () => import('../views/InTheWildView.vue'),
+    meta: { title: 'In the Wild — OpenSeadragon' }
   }
 ]
 

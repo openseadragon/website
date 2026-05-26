@@ -51,22 +51,21 @@
       </div>
     </section>
 
-    <!-- SHOW & TELL -->
+    <!-- IN THE WILD -->
     <section class="section-tight">
       <div class="container">
         <div class="section-head" style="margin-bottom: 28px;">
           <div class="left">
-            <span class="eyebrow"><span class="dot"></span>SHOW &amp; TELL</span>
+            <span class="eyebrow"><span class="dot"></span>IN THE WILD</span>
             <h2 class="h-section">Shipping in production at…</h2>
-            <p class="sub">A small sample. The actual list is in the hundreds — museums, hospitals, mapping
-              agencies, and a few satellites.</p>
+            <p class="sub">A few highlights from the maintainer-curated list — museums, hospitals, mapping agencies, and game communities.</p>
           </div>
-          <div class="right"><a href="https://openseadragon.github.io/examples/in-the-wild/" target="_blank" rel="noopener">Submit your project →</a></div>
+          <div class="right"><RouterLink to="/in-the-wild">See all projects →</RouterLink></div>
         </div>
 
         <div class="show-tell">
-          <a class="show-tell-card" href="http://www.loc.gov/maps" target="_blank" rel="noopener">
-            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.42 0.07 80);"><span class="st-chip">MAPS · HISTORICAL</span></div>
+          <a class="show-tell-card" style="--card-accent: oklch(0.78 0.15 80);" href="http://www.loc.gov/maps" target="_blank" rel="noopener">
+            <span class="st-chip">MAPS · HISTORICAL</span>
             <div class="show-tell-body">
               <span class="org">Library of Congress</span>
               <b>Map Division digital collection</b>
@@ -74,8 +73,8 @@
               <div class="stats"><span><b>Geography</b> division</span><span><b>300 DPI</b> scans</span><span><b>multi-era</b></span></div>
             </div>
           </a>
-          <a class="show-tell-card" href="http://cancer.digitalslidearchive.net/" target="_blank" rel="noopener">
-            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.45 0.06 170);"><span class="st-chip">WHOLE-SLIDE · PATHOLOGY</span></div>
+          <a class="show-tell-card" style="--card-accent: oklch(0.76 0.14 170);" href="http://cancer.digitalslidearchive.net/" target="_blank" rel="noopener">
+            <span class="st-chip">WHOLE-SLIDE · PATHOLOGY</span>
             <div class="show-tell-body">
               <span class="org">Digital Slide Archive</span>
               <b>Cancer pathology slide viewer</b>
@@ -83,8 +82,8 @@
               <div class="stats"><span><b>TCGA</b> data</span><span><b>H&amp;E</b> stain</span><span><b>multi-cancer</b></span></div>
             </div>
           </a>
-          <a class="show-tell-card" href="http://www.proteinatlas.org/" target="_blank" rel="noopener">
-            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.42 0.06 290);"><span class="st-chip">SCIENTIFIC · MICROSCOPY</span></div>
+          <a class="show-tell-card" style="--card-accent: oklch(0.76 0.17 295);" href="http://www.proteinatlas.org/" target="_blank" rel="noopener">
+            <span class="st-chip">SCIENTIFIC · MICROSCOPY</span>
             <div class="show-tell-body">
               <span class="org">Human Protein Atlas</span>
               <b>Protein expression image browser</b>
@@ -92,8 +91,8 @@
               <div class="stats"><span><b>26K</b> proteins</span><span><b>IHC</b> staining</span><span><b>44</b> tissue types</span></div>
             </div>
           </a>
-          <a class="show-tell-card" href="https://www.artic.edu/" target="_blank" rel="noopener">
-            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.42 0.07 30);"><span class="st-chip">ART · HIGH-RES</span></div>
+          <a class="show-tell-card" style="--card-accent: oklch(0.78 0.16 35);" href="https://www.artic.edu/" target="_blank" rel="noopener">
+            <span class="st-chip">ART · HIGH-RES</span>
             <div class="show-tell-body">
               <span class="org">Art Institute of Chicago</span>
               <b>Online collection viewer</b>
@@ -101,8 +100,8 @@
               <div class="stats"><span><b>300K+</b> objects</span><span><b>open access</b></span><span><b>CC0</b> images</span></div>
             </div>
           </a>
-          <a class="show-tell-card" href="http://map.projectzomboid.com/" target="_blank" rel="noopener">
-            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.40 0.06 140);"><span class="st-chip">GAMING · TILE MAP</span></div>
+          <a class="show-tell-card" style="--card-accent: oklch(0.78 0.18 135);" href="http://map.projectzomboid.com/" target="_blank" rel="noopener">
+            <span class="st-chip">GAMING · TILE MAP</span>
             <div class="show-tell-body">
               <span class="org">Project Zomboid Community</span>
               <b>Interactive world map</b>
@@ -110,8 +109,8 @@
               <div class="stats"><span><b>open-world</b></span><span><b>tile-based</b></span><span><b>community</b></span></div>
             </div>
           </a>
-          <a class="show-tell-card" href="https://wellcomecollection.org/works" target="_blank" rel="noopener">
-            <div class="show-tell-thumb" style="--placeholder-tone: oklch(0.42 0.07 240);"><span class="st-chip">HERITAGE · IIIF</span></div>
+          <a class="show-tell-card" style="--card-accent: oklch(0.76 0.14 235);" href="https://wellcomecollection.org/works" target="_blank" rel="noopener">
+            <span class="st-chip">HERITAGE · IIIF</span>
             <div class="show-tell-body">
               <span class="org">Wellcome Collection</span>
               <b>Digital library browser</b>
@@ -398,6 +397,16 @@ useCommunityTilt()
 
 onMounted(() => {
   document.title = 'Community — OpenSeadragon'
+
+  if (typeof IntersectionObserver !== 'undefined') {
+    const showTellEl = document.querySelector('.show-tell')
+    if (showTellEl) {
+      const stObs = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) { showTellEl.classList.add('is-visible'); stObs.disconnect() }
+      }, { threshold: 0.1 })
+      stObs.observe(showTellEl)
+    }
+  }
 
   const statsEl = document.querySelector('.big-stats')
   if (statsEl && typeof IntersectionObserver !== 'undefined') {
