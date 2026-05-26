@@ -123,12 +123,12 @@
     <!-- USE CASES -->
     <section class="section" data-screen-label="03 Use cases">
       <div class="container">
-        <div class="section-head">
-          <div class="left">
+        <div class="section-head" style="margin-bottom: 16px;">
+          <div class="left" style="max-width: 100%; width: 100%;">
             <span class="eyebrow"><span class="dot"></span>BUILT FOR</span>
             <h2 class="h-section">Wherever an image is too big to fit on screen.</h2>
+            <RouterLink to="/examples" style="align-self: flex-end; color: var(--paper-dim); font-size: 14px;">See more in the gallery →</RouterLink>
           </div>
-          <div class="right"><RouterLink to="/examples">See more in the gallery →</RouterLink></div>
         </div>
         <div class="cases">
           <article class="case-card" data-case-theme="art">
