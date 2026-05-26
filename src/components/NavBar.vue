@@ -14,7 +14,6 @@
       </RouterLink>
 
       <div class="nav-links">
-        <RouterLink class="nav-link" to="/" :aria-current="route.path === '/' ? 'page' : undefined">Home</RouterLink>
         <RouterLink class="nav-link" to="/docs" :aria-current="route.path === '/docs' ? 'page' : undefined">Docs</RouterLink>
         <RouterLink class="nav-link" to="/examples" :aria-current="route.path === '/examples' ? 'page' : undefined">Examples</RouterLink>
         <RouterLink class="nav-link" to="/playground" :aria-current="route.path === '/playground' ? 'page' : undefined">Playground</RouterLink>
@@ -57,7 +56,6 @@
 
   <Teleport to="body">
     <div class="nav-mobile-menu" :class="{ open: mobileOpen }" @click.self="mobileOpen = false">
-      <RouterLink class="nav-link" to="/" :aria-current="route.path === '/' ? 'page' : undefined" @click="mobileOpen = false">Home</RouterLink>
       <RouterLink class="nav-link" to="/docs" :aria-current="route.path === '/docs' ? 'page' : undefined" @click="mobileOpen = false">Docs</RouterLink>
       <RouterLink class="nav-link" to="/examples" :aria-current="route.path === '/examples' ? 'page' : undefined" @click="mobileOpen = false">Examples</RouterLink>
       <RouterLink class="nav-link" to="/playground" :aria-current="route.path === '/playground' ? 'page' : undefined" @click="mobileOpen = false">Playground</RouterLink>
