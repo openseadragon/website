@@ -254,6 +254,11 @@
             <p>The official deep-dive by Ian Gilman. Coordinate systems, animation, plugins.</p>
             <span class="more">newline.co →</span>
           </a>
+          <a class="community-card" href="https://iangilman.com/openseadragonizer/" target="_blank" rel="noopener">
+            <b>Browser Extension</b>
+            <p>OpenSeadragonizer turns any image on any webpage into an OSD viewer. Available for Chrome, Firefox, or use the web version.</p>
+            <span class="more">openseadragonizer →</span>
+          </a>
         </div>
       </div>
     </section>
