@@ -350,7 +350,38 @@ const accentOptions = ACCENT_OPTIONS
 
 const displayStats = reactive({ stars: '0', contrib: '0', dl: '0', issues: '0' })
 
-const TARGETS = { stars: 3400, contrib: 142, dl: 760000, issues: 2847 }
+const FALLBACK_TARGETS = { stars: 3400, contrib: 142, dl: 760000, issues: 2847 }
+let TARGETS = { ...FALLBACK_TARGETS }
+
+async function fetchRealStats() {
+  const [repoRes, contribRes, dlRes, issuesRes] = await Promise.allSettled([
+    fetch('https://api.github.com/repos/openseadragon/openseadragon'),
+    fetch('https://api.github.com/repos/openseadragon/openseadragon/contributors?per_page=1&anon=true'),
+    fetch('https://api.npmjs.org/downloads/point/last-month/openseadragon'),
+    fetch('https://api.github.com/search/issues?q=repo:openseadragon/openseadragon+type:issue+state:closed&per_page=1')
+  ])
+
+  if (repoRes.status === 'fulfilled' && repoRes.value.ok) {
+    const data = await repoRes.value.json()
+    if (data.stargazers_count) TARGETS.stars = data.stargazers_count
+  }
+
+  if (contribRes.status === 'fulfilled' && contribRes.value.ok) {
+    const link = contribRes.value.headers.get('Link') || ''
+    const match = link.match(/page=(\d+)>; rel="last"/)
+    if (match) TARGETS.contrib = parseInt(match[1])
+  }
+
+  if (dlRes.status === 'fulfilled' && dlRes.value.ok) {
+    const data = await dlRes.value.json()
+    if (data.downloads) TARGETS.dl = data.downloads
+  }
+
+  if (issuesRes.status === 'fulfilled' && issuesRes.value.ok) {
+    const data = await issuesRes.value.json()
+    if (data.total_count) TARGETS.issues = data.total_count
+  }
+}
 
 function countUp() {
   const dur = 1800
@@ -401,13 +432,14 @@ onMounted(() => {
   }
 
   const statsEl = document.querySelector('.big-stats')
+  const runCountUp = () => fetchRealStats().catch(() => {}).then(countUp)
   if (statsEl && typeof IntersectionObserver !== 'undefined') {
     const obs = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) { countUp(); obs.disconnect() }
+      if (entries[0].isIntersecting) { runCountUp(); obs.disconnect() }
     }, { threshold: 0.3 })
     obs.observe(statsEl)
   } else {
-    countUp()
+    runCountUp()
   }
 })
 </script>
