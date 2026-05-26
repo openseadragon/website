@@ -255,6 +255,35 @@
       </div>
     </section>
 
+    <!-- LEARN -->
+    <section class="section-tight" id="learn" data-screen-label="05b Learn">
+      <div class="container">
+        <div class="section-head">
+          <div class="left">
+            <span class="eyebrow"><span class="dot"></span>LEARN</span>
+            <h2 class="h-section">Go from beginner to builder.</h2>
+            <p class="sub">The official course covers setup, coordinate systems, animation, and the full API &mdash; taught by Ian Gilman, creator and maintainer of OpenSeadragon.</p>
+          </div>
+        </div>
+        <a class="course-card" href="https://www.newline.co/courses/openseadragon-deep-dive" target="_blank" rel="noopener noreferrer">
+          <div class="course-card-body">
+            <div class="course-badge">Newline &middot; Official Course</div>
+            <h3 class="course-title">OpenSeadragon Deep Dive</h3>
+            <p class="course-instructor">Ian Gilman &middot; creator &amp; maintainer</p>
+            <ul class="course-topics">
+              <li>Basic concepts &amp; setup</li>
+              <li>Coordinate systems</li>
+              <li>Animation</li>
+              <li>Full API walkthrough</li>
+            </ul>
+          </div>
+          <div class="course-card-cta">
+            <span class="btn btn-primary">Enroll now &rarr;</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
     <!-- EXAMPLES -->
     <section class="section-tight" id="examples" data-screen-label="06 Examples">
       <div class="container">

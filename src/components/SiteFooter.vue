@@ -33,7 +33,7 @@
             <li><RouterLink to="/docs">Getting started</RouterLink></li>
             <li><a href="#">Creating tiles</a></li>
             <li><a href="#">Migration to v6</a></li>
-            <li><a href="#">Course</a></li>
+            <li><a href="https://www.newline.co/courses/openseadragon-deep-dive" target="_blank" rel="noopener noreferrer">Course</a></li>
           </ul>
         </div>
         <div>
