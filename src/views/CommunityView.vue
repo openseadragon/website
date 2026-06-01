@@ -4,8 +4,6 @@
 
     <!-- HERO -->
     <header class="page-hero">
-      <canvas id="tile-particles" class="tile-particles" aria-hidden="true"></canvas>
-      <div class="cursor-spot" id="cursor-spot" aria-hidden="true"></div>
       <svg class="hero-wires" aria-hidden="true" viewBox="0 0 1280 480" preserveAspectRatio="none">
         <defs>
           <pattern id="cmwires-grid" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
@@ -15,7 +13,7 @@
         <rect width="1280" height="480" fill="url(#cmwires-grid)"/>
       </svg>
       <div class="container">
-        <span class="eyebrow"><span class="dot"></span>SIXTEEN YEARS · STILL SHIPPING · STILL OPEN</span>
+        <span class="eyebrow"><span class="dot"></span>{{ yearsActive }} YEARS · STILL SHIPPING · STILL OPEN</span>
         <h1 class="h-display" style="margin-top:18px;">Active.<br/>Patient. <em>Open.</em></h1>
         <p class="lede" style="margin-top:20px;">The same handful of people who started OpenSeadragon in 2010 are
           still maintaining it. Sponsor their time, file a thoughtful issue, or
@@ -35,7 +33,7 @@
           <div class="big-stat">
             <span>Contributors</span>
             <b ref="contribEl">{{ displayStats.contrib }}</b>
-            <small>across 16 years</small>
+            <small>across {{ yearsActive }} years</small>
           </div>
           <div class="big-stat">
             <span>npm downloads / month</span>
@@ -321,8 +319,8 @@ import { useOSDVersion } from '@/composables/useOSDVersion.js'
 import { useGitHubActivity } from '@/composables/useGitHubActivity.js'
 import TweaksPanel from '@/components/TweaksPanel.vue'
 import { TweakSection, TweakRadio, TweakColor } from '@/components/tweaks/TweakControls.vue'
-import { useParticles } from '@/composables/useParticles.js'
-import { useAnimations, useCursorSpot, useCommunityTilt } from '@/composables/useAnimations.js'
+import { useAnimations } from '@/composables/useAnimations.js'
+import { yearsActive } from '@/utils/osdMeta.js'
 
 const { tag } = useOSDVersion()
 const { commitsFeed, issuesFeed, loading, relativeTime } = useGitHubActivity()
@@ -413,10 +411,7 @@ watch(() => tweaks._accentArr, (v) => {
   html.setAttribute('data-accent', name)
 })
 
-useParticles('tile-particles', '.page-hero')
 useAnimations()
-useCursorSpot()
-useCommunityTilt()
 
 onMounted(() => {
   document.title = 'Community — OpenSeadragon'

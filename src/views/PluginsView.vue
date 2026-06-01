@@ -4,8 +4,6 @@
 
     <!-- HERO -->
     <header class="page-hero">
-      <canvas id="tile-particles" class="tile-particles" aria-hidden="true"></canvas>
-      <div class="cursor-spot" id="cursor-spot" aria-hidden="true"></div>
       <svg class="hero-wires" aria-hidden="true" viewBox="0 0 1280 480" preserveAspectRatio="none">
         <defs>
           <pattern id="phwires-grid" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
@@ -193,9 +191,8 @@ import NavBar from '@/components/NavBar.vue'
 import SiteFooter from '@/components/SiteFooter.vue'
 import TweaksPanel from '@/components/TweaksPanel.vue'
 import { TweakSection, TweakRadio, TweakColor } from '@/components/tweaks/TweakControls.vue'
-import { useParticles } from '@/composables/useParticles.js'
 import { usePluginsMap } from '@/composables/usePluginsMap.js'
-import { useAnimations, useCursorSpot } from '@/composables/useAnimations.js'
+import { useAnimations } from '@/composables/useAnimations.js'
 import { useGitHubPluginData } from '@/composables/useGitHubPluginData.js'
 import { PLUGINS_DATA, PLUGIN_NODES } from '@/data/plugins.js'
 
@@ -276,10 +273,8 @@ function getUpdated(plugin) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-useParticles('tile-particles', '.page-hero')
 usePluginsMap()
 useAnimations()
-useCursorSpot()
 
 onMounted(() => {
   document.title = 'Plugins — OpenSeadragon'

@@ -1,11 +1,9 @@
 <template>
   <div>
-    <div class="cursor-spot" id="cursor-spot" aria-hidden="true"></div>
     <NavBar />
 
     <!-- HERO -->
     <header class="hero" data-screen-label="02 Hero">
-      <canvas id="tile-particles" class="tile-particles" aria-hidden="true"></canvas>
       <svg class="hero-wires" aria-hidden="true" viewBox="0 0 1280 720" preserveAspectRatio="none">
         <defs>
           <pattern id="wires-grid" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
@@ -200,7 +198,7 @@
         <div class="section-head">
           <div class="left">
             <span class="eyebrow"><span class="dot"></span>BUILT IN</span>
-            <h2 class="h-section">Sixteen years of details, ready out of the box.</h2>
+            <h2 class="h-section">{{ yearsActive }} years of details, ready out of the box.</h2>
             <p class="sub">No gradient compromises. No "but only if you also load…". The full set, tested across every browser that matters.</p>
           </div>
         </div>
@@ -364,7 +362,7 @@
           <div class="left">
             <span class="eyebrow"><span class="dot"></span>COMMUNITY</span>
             <h2 class="h-section">Active. Patient. Open.</h2>
-            <p class="sub">Sixteen years in, still maintained by the people who use it.</p>
+            <p class="sub">{{ yearsActive }} years in, still maintained by the people who use it.</p>
           </div>
         </div>
         <div class="community">
@@ -403,11 +401,11 @@ import SiteFooter from '../components/SiteFooter.vue'
 import PenEditor from '../components/PenEditor.vue'
 import TweaksPanel from '../components/TweaksPanel.vue'
 import { TweakRadio, TweakColor } from '../components/tweaks/TweakControls.vue'
-import { useParticles } from '../composables/useParticles.js'
 import { usePluginsMap } from '../composables/usePluginsMap.js'
-import { useAnimations, useCursorSpot, useCopyButtons, useCommunityTilt } from '../composables/useAnimations.js'
+import { useAnimations, useCopyButtons } from '../composables/useAnimations.js'
 import { useOSDVersion } from '../composables/useOSDVersion.js'
 import { CODEPENS } from '../data/codepens.js'
+import { yearsActive } from '../utils/osdMeta.js'
 
 // ── Reactive display state ──
 const activePen = ref(null)
@@ -426,12 +424,9 @@ watch(() => tweaks.frame, val => { rebuildViewersForTheme(val) })
 
 // ── Composables ──
 const { tag, prefixUrl } = useOSDVersion()
-useParticles('tile-particles', '.hero')
 usePluginsMap()
 useAnimations()
-useCursorSpot()
 useCopyButtons()
-useCommunityTilt()
 
 // ── OSD viewer state ──
 let heroViewer = null

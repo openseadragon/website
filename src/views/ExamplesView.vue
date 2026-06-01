@@ -4,8 +4,6 @@
 
     <!-- HERO -->
     <header class="page-hero">
-      <canvas id="tile-particles" class="tile-particles" aria-hidden="true"></canvas>
-      <div class="cursor-spot" id="cursor-spot" aria-hidden="true"></div>
       <svg class="hero-wires" aria-hidden="true" viewBox="0 0 1280 480" preserveAspectRatio="none">
         <defs>
           <pattern id="exwires-grid" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
@@ -118,8 +116,7 @@ import SiteFooter from '@/components/SiteFooter.vue'
 import TweaksPanel from '@/components/TweaksPanel.vue'
 import PenEditor from '@/components/PenEditor.vue'
 import { TweakSection, TweakRadio, TweakColor } from '@/components/tweaks/TweakControls.vue'
-import { useParticles } from '@/composables/useParticles.js'
-import { useAnimations, useCursorSpot } from '@/composables/useAnimations.js'
+import { useAnimations } from '@/composables/useAnimations.js'
 import { CODEPENS } from '@/data/codepens.js'
 
 const ACCENT_OPTIONS = [
@@ -162,9 +159,7 @@ watch(() => tweaks._accentArr, (v) => {
   html.setAttribute('data-accent', name)
 })
 
-useParticles('tile-particles', '.page-hero')
 useAnimations()
-useCursorSpot()
 
 onMounted(() => {
   document.title = 'Examples — OpenSeadragon'

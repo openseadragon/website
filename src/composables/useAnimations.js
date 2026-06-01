@@ -349,39 +349,6 @@ function wireFeatureIcons() {
   })
 }
 
-export function useCursorSpot() {
-  let rafId = null
-  const cleanupFns = []
-
-  onMounted(() => {
-    const spot = document.getElementById('cursor-spot')
-    if (!spot) return
-    let tx = window.innerWidth / 2, ty = window.innerHeight / 2, x = tx, y = ty
-
-    const onMove = (e) => { tx = e.clientX; ty = e.clientY; spot.classList.add('is-active') }
-    const onLeave = () => spot.classList.remove('is-active')
-
-    document.addEventListener('mousemove', onMove, { passive: true })
-    document.addEventListener('mouseleave', onLeave)
-    cleanupFns.push(
-      () => document.removeEventListener('mousemove', onMove),
-      () => document.removeEventListener('mouseleave', onLeave)
-    )
-
-    function tick() {
-      x += (tx - x) * 0.12; y += (ty - y) * 0.12
-      spot.style.setProperty('--mx', x + 'px'); spot.style.setProperty('--my', y + 'px')
-      rafId = requestAnimationFrame(tick)
-    }
-    tick()
-  })
-
-  onUnmounted(() => {
-    cleanupFns.forEach(fn => fn())
-    if (rafId) cancelAnimationFrame(rafId)
-  })
-}
-
 export function useCopyButtons() {
   onMounted(() => {
     document.querySelectorAll('[data-copy]').forEach(btn => {
@@ -398,25 +365,3 @@ export function useCopyButtons() {
   })
 }
 
-export function useCommunityTilt() {
-  onMounted(() => {
-    document.querySelectorAll('.community-card').forEach(card => {
-      let tx = 0, ty = 0, cx = 0, cy = 0, raf = null, hovering = false
-      card.addEventListener('mouseenter', () => { hovering = true })
-      card.addEventListener('mousemove', (e) => {
-        const r = card.getBoundingClientRect()
-        const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height
-        tx = (py - 0.5) * -10; ty = (px - 0.5) * 10
-        card.style.setProperty('--sx', (px * 100) + '%'); card.style.setProperty('--sy', (py * 100) + '%')
-        if (!raf) raf = requestAnimationFrame(tick)
-      })
-      card.addEventListener('mouseleave', () => { hovering = false; tx = 0; ty = 0; if (!raf) raf = requestAnimationFrame(tick) })
-      function tick() {
-        cx += (tx - cx) * 0.2; cy += (ty - cy) * 0.2
-        card.style.transform = `rotateX(${cx.toFixed(2)}deg) rotateY(${cy.toFixed(2)}deg) translateZ(0)`
-        if (Math.abs(cx - tx) > 0.05 || Math.abs(cy - ty) > 0.05) { raf = requestAnimationFrame(tick) }
-        else { raf = null; if (!hovering) card.style.transform = '' }
-      }
-    })
-  })
-}
