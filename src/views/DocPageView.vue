@@ -141,7 +141,7 @@
     <TweaksPanel title="Tweaks">
       <TweakSection label="Theme" />
       <TweakRadio label="Mode" v-model="tweaks.theme" :options="['dark', 'light']" />
-      <TweakColor label="Accent" v-model="tweaks.accent" :options="accentOptions" />
+      <TweakColor label="Accent" v-model="tweaks._accentArr" :options="accentOptions" />
     </TweaksPanel>
   </div>
 </template>
@@ -190,7 +190,8 @@ const ACCENT_COLOR_MAP = {
 }
 
 const html = document.documentElement
-const savedTheme = localStorage.getItem('osd-theme') || html.getAttribute('data-theme') || 'dark'
+let savedTheme; try { savedTheme = localStorage.getItem('osd-theme') } catch (_) {}
+savedTheme = savedTheme || html.getAttribute('data-theme') || 'dark'
 const savedAccent = html.getAttribute('data-accent') || 'aqua'
 
 const tweaks = reactive({

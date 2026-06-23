@@ -67,6 +67,7 @@ function typewriteHtml(target, html, caret, charMs, done) {
 
 export function useAnimations() {
   const localObservers = []
+  let scrollHandler = null
 
   onMounted(() => {
     if (!window.anime) return
@@ -238,6 +239,7 @@ export function useAnimations() {
           tocLinks.forEach(a => a.classList.remove('active'))
           if (best) best.link.classList.add('active')
         }
+        scrollHandler = update
         window.addEventListener('scroll', update, { passive: true })
         update()
       }
@@ -284,6 +286,7 @@ export function useAnimations() {
   onUnmounted(() => {
     localObservers.forEach(io => io.disconnect())
     localObservers.length = 0
+    if (scrollHandler) { window.removeEventListener('scroll', scrollHandler); scrollHandler = null }
   })
 }
 

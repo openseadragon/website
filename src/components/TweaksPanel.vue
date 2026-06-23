@@ -59,6 +59,7 @@ function onDragStart(e) {
 
 let resizeObs = null
 function onMsg(e) {
+  if (e.source !== window.parent) return
   const t = e?.data?.type
   if (t === '__activate_edit_mode') { open.value = true; setTimeout(clampToViewport, 0) }
   else if (t === '__deactivate_edit_mode') { open.value = false }

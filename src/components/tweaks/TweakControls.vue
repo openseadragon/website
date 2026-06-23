@@ -1,5 +1,7 @@
 <!-- All tweak controls in one file to avoid many small imports -->
 <script>
+import { ref, computed } from 'vue'
+
 // TweakSection
 export const TweakSection = {
   props: { label: String },
@@ -43,7 +45,6 @@ export const TweakRadio = {
   props: { label: String, modelValue: [String, Number, Boolean], options: Array },
   emits: ['update:modelValue'],
   setup(props, { emit }) {
-    const { ref, computed } = Vue
     const dragging = ref(false)
     const trackRef = ref(null)
     const opts = computed(() => props.options.map(o => typeof o === 'object' ? o : { value: o, label: o }))
@@ -76,7 +77,7 @@ export const TweakRadio = {
       </select>
       <div v-else ref="trackRef" role="radiogroup" :class="['twk-seg', { dragging }]" @pointerdown="onPointerDown">
         <div class="twk-seg-thumb" :style="{ left: \`calc(2px + \${idx} * (100% - 4px) / \${n})\`, width: \`calc((100% - 4px) / \${n})\` }" />
-        <button v-for="o in opts" :key="o.value" type="button" role="radio" :aria-checked="o.value === modelValue">{{ o.label }}</button>
+        <button v-for="o in opts" :key="o.value" type="button" role="radio" :aria-checked="o.value === modelValue" @click="$emit('update:modelValue', o.value)">{{ o.label }}</button>
       </div>
     </div>`
 }

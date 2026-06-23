@@ -12,10 +12,11 @@ const IS_DEV = typeof import.meta !== 'undefined' && import.meta.env?.DEV === tr
 async function ghFetch(url) {
   try {
     const res = await fetch(url)
-    if (!res.ok) return { ok: false, status: res.status, data: null }
-    return { ok: true, status: res.status, data: await res.json() }
+    const remaining = parseInt(res.headers.get('x-ratelimit-remaining') ?? '-1', 10)
+    if (!res.ok) return { ok: false, status: res.status, data: null, remaining }
+    return { ok: true, status: res.status, data: await res.json(), remaining }
   } catch (_) {
-    return { ok: false, status: 0, data: null }
+    return { ok: false, status: 0, data: null, remaining: -1 }
   }
 }
 
@@ -59,19 +60,28 @@ export function useGitHubPluginData(plugins) {
     loading.value = false
 
     // ── 3. Phase 2: latest release ──────────────────────────────────────────
-    // Uses the remaining rate budget (60 − 41 = 19 per fresh hour).
-    // Plugins that respond get upgraded to "v1.2.3 · X" instead of "Commit · X".
-    // The rest keep the pushed_at date from phase 1 — still accurate.
+    // Only fetch releases for plugins that returned data in Phase 1, and cap
+    // the batch to the remaining rate-limit budget (keep a 5-request reserve).
+    const remainingAfterPhase1 = repoResults.reduce((min, r) => {
+      const rem = r.status === 'fulfilled' ? (r.value.remaining ?? -1) : -1
+      return rem >= 0 ? Math.min(min, rem) : min
+    }, Infinity)
+    const phase2Budget = remainingAfterPhase1 === Infinity ? 10 : Math.max(0, remainingAfterPhase1 - 5)
+    const phase2Candidates = toFetch.filter((_, i) => {
+      const r = repoResults[i]
+      return r.status === 'fulfilled' && r.value.ok
+    }).slice(0, phase2Budget)
+
     await new Promise(r => setTimeout(r, 150))
 
     const releaseResults = await Promise.allSettled(
-      toFetch.map(p => ghFetch(`https://api.github.com/repos/${p.repo}/releases/latest`))
+      phase2Candidates.map(p => ghFetch(`https://api.github.com/repos/${p.repo}/releases/latest`))
     )
 
     releaseResults.forEach((res, i) => {
       const r = res.status === 'fulfilled' ? res.value : null
       if (r?.ok && r.data?.tag_name) {
-        const p = toFetch[i]
+        const p = phase2Candidates[i]
         ghData[p.repo] = {
           ...ghData[p.repo],
           version: r.data.tag_name,

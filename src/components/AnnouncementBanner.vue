@@ -21,11 +21,11 @@ const STORAGE_KEY = 'osd-banner-dismissed'
 const visible = ref(false)
 
 onMounted(() => {
-  visible.value = !localStorage.getItem(STORAGE_KEY)
+  try { visible.value = !localStorage.getItem(STORAGE_KEY) } catch (_) { visible.value = true }
 })
 
 function dismiss() {
-  localStorage.setItem(STORAGE_KEY, '1')
+  try { localStorage.setItem(STORAGE_KEY, '1') } catch (_) {}
   visible.value = false
 }
 </script>

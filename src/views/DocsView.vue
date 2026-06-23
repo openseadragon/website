@@ -40,7 +40,7 @@
             <p class="doc-lede">A working deep-zoom viewer in five minutes. Drop in a script tag,
               add a container, point at a tile source — that's the whole shape.</p>
 
-            <h2>1. Install</h2>
+            <h2 id="install">1. Install</h2>
             <p>Use the package manager you already use. OpenSeadragon ships as an ESM module,
               a UMD bundle, and a single-file IIFE for plain HTML.</p>
 
@@ -56,7 +56,7 @@
 <span class="tok-pun">&lt;</span><span class="tok-fn">script</span> <span class="tok-key">src</span><span class="tok-pun">=</span><span class="tok-str">"https://cdn.jsdelivr.net/npm/openseadragon@6/build/openseadragon/openseadragon.min.js"</span><span class="tok-pun">&gt;&lt;/</span><span class="tok-fn">script</span><span class="tok-pun">&gt;</span></pre>
             </div>
 
-            <h2>2. Add a sized container</h2>
+            <h2 id="container">2. Add a sized container</h2>
             <p>The container <code>div</code> must have a width and a height before initialization.
               This is the single most common gotcha — an empty <code>div</code> renders nothing.</p>
 
@@ -77,7 +77,7 @@
               parent a defined height. <code>100%</code> with no anchor will collapse to zero.
             </div>
 
-            <h2>3. Mount the viewer</h2>
+            <h2 id="mount">3. Mount the viewer</h2>
             <p>Pass a <code>tileSources</code> URL — DZI, IIIF info.json, or a custom source.
               Everything else has sensible defaults; tweak as you go.</p>
 
@@ -104,7 +104,7 @@ viewer.<span class="tok-fn">addHandler</span><span class="tok-pun">(</span><span
 <span class="tok-pun">});</span></pre>
             </div>
 
-            <h2>4. Next steps</h2>
+            <h2 id="next">4. Next steps</h2>
             <ul>
               <li>Read the <a href="#" style="color:var(--accent);">Viewport &amp; coordinates</a> guide — it unlocks overlays.</li>
               <li>Try <a href="#" style="color:var(--accent);">multi-image worlds</a> if you have more than one image.</li>
@@ -129,7 +129,7 @@ viewer.<span class="tok-fn">addHandler</span><span class="tok-pun">(</span><span
               <div class="api-row"><span class="name">.destroy()</span><span class="type">void</span><span>Tear down listeners and DOM. Call before re-mounting.</span></div>
             </div>
 
-            <h3>Common events</h3>
+            <h3 id="events">Common events</h3>
             <div class="api-table">
               <div class="api-row"><span>Event</span><span>Payload</span><span>Fires when…</span></div>
               <div class="api-row"><span class="name">open</span><span class="type">{ source }</span><span>A tile source has loaded and is ready.</span></div>
@@ -158,7 +158,7 @@ viewer.<span class="tok-fn">addHandler</span><span class="tok-pun">(</span><span
             </div>
 
             <!-- WHAT'S NEW -->
-            <h2 style="margin-top: 64px;">Recent releases</h2>
+            <h2 id="releases" style="margin-top: 64px;">Recent releases</h2>
             <div class="whatsnew">
               <a href="#">
                 <span class="v">{{ tag }} · latest</span>
@@ -213,7 +213,7 @@ viewer.<span class="tok-fn">addHandler</span><span class="tok-pun">(</span><span
       />
       <TweakColor
         label="Accent"
-        v-model="tweaks.accent"
+        v-model="tweaks._accentArr"
         :options="accentOptions"
       />
       <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);font-size:11px;font-family:ui-monospace,monospace;color:rgba(255,255,255,0.45);line-height:1.5">
@@ -258,7 +258,8 @@ const ACCENT_COLOR_MAP = {
 }
 
 const html = document.documentElement
-const savedTheme = localStorage.getItem('osd-theme') || html.getAttribute('data-theme') || 'dark'
+let savedTheme; try { savedTheme = localStorage.getItem('osd-theme') } catch (_) {}
+savedTheme = savedTheme || html.getAttribute('data-theme') || 'dark'
 const savedAccent = html.getAttribute('data-accent') || 'aqua'
 
 const tweaks = reactive({

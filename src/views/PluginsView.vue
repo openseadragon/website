@@ -53,7 +53,7 @@
             <span class="pl-hub-title">openseadragon</span>
             <span class="pl-hub-sub">core viewer</span>
           </div>
-          <a v-for="node in PLUGIN_NODES" :key="node.mark" class="pl-node" href="#">
+          <a v-for="node in PLUGIN_NODES" :key="node.mark" class="pl-node" href="#" @click.prevent>
             <span class="pl-mark">{{ node.mark }}</span>
             <span class="pl-name">{{ node.name }}</span>
           </a>
@@ -206,7 +206,8 @@ const ACCENT_NAME_MAP = { '#67d6ee': 'aqua', '#ec8761': 'coral', '#c9ee5e': 'lim
 const ACCENT_COLOR_MAP = { aqua: ACCENT_OPTIONS[0], coral: ACCENT_OPTIONS[1], lime: ACCENT_OPTIONS[2], violet: ACCENT_OPTIONS[3] }
 
 const html = document.documentElement
-const savedTheme = localStorage.getItem('osd-theme') || html.getAttribute('data-theme') || 'dark'
+let savedTheme; try { savedTheme = localStorage.getItem('osd-theme') } catch (_) {}
+savedTheme = savedTheme || html.getAttribute('data-theme') || 'dark'
 const savedAccent = html.getAttribute('data-accent') || 'aqua'
 
 const tweaks = reactive({
