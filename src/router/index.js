@@ -1,5 +1,25 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+// ── Legacy URL redirects (openseadragon.github.io old paths) ─────────────────
+const LEGACY_REDIRECTS = {
+  '/docs.html':         '/docs',
+  '/getting-started':   '/docs',
+  '/getting-started/':  '/docs',
+  '/help':              '/docs',
+  '/help/':             '/docs',
+  '/examples/':         '/examples',
+  '/plugins.html':      '/plugins',
+  '/api':               '/docs/api/OpenSeadragon',
+  '/api/':              '/docs/api/OpenSeadragon',
+  '/jsdoc':             '/docs/api/OpenSeadragon',
+  '/jsdoc/':            '/docs/api/OpenSeadragon',
+}
+
+const LEGACY_EXTERNAL = {
+  '/license':   'https://github.com/openseadragon/openseadragon/blob/master/LICENSE.txt',
+  '/license/':  'https://github.com/openseadragon/openseadragon/blob/master/LICENSE.txt',
+}
+
 const routes = [
   {
     path: '/',
@@ -50,6 +70,12 @@ const routes = [
     path: '/in-the-wild',
     component: () => import('../views/InTheWildView.vue'),
     meta: { title: 'In the Wild — OpenSeadragon' }
+  },
+  // Catch-all — 404
+  {
+    path: '/:pathMatch(.*)*',
+    component: () => import('../views/NotFoundView.vue'),
+    meta: { title: 'Not Found — OpenSeadragon' }
   }
 ]
 
@@ -61,6 +87,18 @@ export const router = createRouter({
     if (savedPosition) return savedPosition
     return { top: 0 }
   }
+})
+
+router.beforeEach((to, _from, next) => {
+  // External legacy redirects
+  const ext = LEGACY_EXTERNAL[to.path]
+  if (ext) { window.location.replace(ext); return }
+
+  // Internal legacy redirects
+  const leg = LEGACY_REDIRECTS[to.path]
+  if (leg) { next(leg); return }
+
+  next()
 })
 
 router.afterEach((to) => {

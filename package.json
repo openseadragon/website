@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/fetch-github-cache.js",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync-api": "node scripts/sync-api-docs.js"
   },
   "dependencies": {
     "fuse.js": "^7.3.0",

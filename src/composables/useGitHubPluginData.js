@@ -1,12 +1,8 @@
 import { reactive, ref } from 'vue'
 
-// Stable key — only change if the stored data shape changes incompatibly.
-// Do NOT bump this just to force a refresh during development.
 const CACHE_KEY = 'osd-plugin-gh-2'
-const TTL_OK   = 24 * 60 * 60 * 1000 // 24 h — when we have real data
-const TTL_FAIL =      60 * 60 * 1000  //  1 h — when rate-limited (matches reset window)
-
-// In dev mode skip the cache so hot-reloads always show current fetch behaviour
+const TTL_OK   = 24 * 60 * 60 * 1000
+const TTL_FAIL =      60 * 60 * 1000
 const IS_DEV = typeof import.meta !== 'undefined' && import.meta.env?.DEV === true
 
 async function ghFetch(url) {
@@ -25,7 +21,7 @@ export function useGitHubPluginData(plugins) {
   const loading = ref(true)
 
   async function load() {
-    // ── 1. Try cache ────────────────────────────────────────────────────────
+    // ── 1. Try localStorage cache ─────────────────────────────────────────────
     if (!IS_DEV) {
       try {
         const raw = localStorage.getItem(CACHE_KEY)
@@ -40,11 +36,31 @@ export function useGitHubPluginData(plugins) {
       } catch (_) {}
     }
 
+    // ── 2. Try build-time cache ───────────────────────────────────────────────
+    if (!IS_DEV) {
+      try {
+        const cacheUrl = import.meta.env.BASE_URL + 'data/github-cache.json'
+        const res = await fetch(cacheUrl)
+        if (res.ok) {
+          const cache = await res.json()
+          if (cache?.plugins && Object.keys(cache.plugins).length > 0) {
+            Object.entries(cache.plugins).forEach(([k, v]) => { ghData[k] = v })
+            loading.value = false
+            // Persist into localStorage so repeated page loads skip the cache fetch too
+            try {
+              const snapshot = {}
+              Object.entries(ghData).forEach(([k, v]) => { snapshot[k] = { ...v } })
+              localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), ttl: TTL_OK, data: snapshot }))
+            } catch (_) {}
+            return
+          }
+        }
+      } catch (_) {}
+    }
+
+    // ── 3. Live GitHub API ────────────────────────────────────────────────────
     const toFetch = plugins.filter(p => p.repo)
 
-    // ── 2. Phase 1: repo info ───────────────────────────────────────────────
-    // 1 request per plugin. With 41 plugins this stays under the 60/hr
-    // unauthenticated rate limit on a fresh session. Gives us stars + pushed_at.
     const repoResults = await Promise.allSettled(
       toFetch.map(p => ghFetch(`https://api.github.com/repos/${p.repo}`))
     )
@@ -56,12 +72,9 @@ export function useGitHubPluginData(plugins) {
         : { stars: null, updatedAt: null, version: null }
     })
 
-    // Flip loading now — all plugins immediately show stars + commit date (or —)
     loading.value = false
 
-    // ── 3. Phase 2: latest release ──────────────────────────────────────────
-    // Only fetch releases for plugins that returned data in Phase 1, and cap
-    // the batch to the remaining rate-limit budget (keep a 5-request reserve).
+    // Phase 2: latest release (rate-limit aware)
     const remainingAfterPhase1 = repoResults.reduce((min, r) => {
       const rem = r.status === 'fulfilled' ? (r.value.remaining ?? -1) : -1
       return rem >= 0 ? Math.min(min, rem) : min
@@ -82,24 +95,17 @@ export function useGitHubPluginData(plugins) {
       const r = res.status === 'fulfilled' ? res.value : null
       if (r?.ok && r.data?.tag_name) {
         const p = phase2Candidates[i]
-        ghData[p.repo] = {
-          ...ghData[p.repo],
-          version: r.data.tag_name,
-          updatedAt: r.data.published_at ?? ghData[p.repo]?.updatedAt,
-        }
+        ghData[p.repo] = { ...ghData[p.repo], version: r.data.tag_name, updatedAt: r.data.published_at ?? ghData[p.repo]?.updatedAt }
       }
     })
 
-    // ── 4. Persist ──────────────────────────────────────────────────────────
+    // Persist to localStorage
     if (!IS_DEV) {
       try {
         const snapshot = {}
         Object.entries(ghData).forEach(([k, v]) => { snapshot[k] = { ...v } })
-        // If every plugin failed (rate-limited), use a short TTL so we retry
-        // as soon as the rate limit window resets (~1 h).
         const anyData = Object.values(snapshot).some(v => v.stars != null || v.updatedAt != null)
-        const ttl = anyData ? TTL_OK : TTL_FAIL
-        localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), ttl, data: snapshot }))
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), ttl: anyData ? TTL_OK : TTL_FAIL, data: snapshot }))
       } catch (_) {}
     }
   }
