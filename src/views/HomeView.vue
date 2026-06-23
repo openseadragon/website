@@ -21,10 +21,11 @@
       </svg>
 
       <div class="container">
-        <div class="eyebrow"><span class="dot"></span> {{ tag }} just shipped · MIT open source · zero dependencies</div>
-        <div class="hero-grid" style="margin-top: 28px;">
+        <div class="eyebrow"><span class="dot"></span> {{ tag }} · New BSD · zero dependencies</div>
+        <div class="hero-grid" style="margin-top: 8px;">
           <div class="hero-copy">
-            <h1 class="h-display">Deep zoom for<br/><em>massive</em> images.</h1>
+            <h1 class="hero-brand">OpenSeadragon</h1>
+            <p class="hero-subtitle">Deep zoom for <em>massive</em> images.</p>
             <p class="lede">A JavaScript viewer for high-resolution tiled images — maps, microscopy, manuscripts, anything that doesn't fit on a screen. Smooth at any scale. Yours to extend.</p>
             <div class="hero-cta">
               <RouterLink to="/docs" class="btn btn-primary">
@@ -33,8 +34,8 @@
               </RouterLink>
               <span class="copy-snippet">
                 <span class="muted">$</span>
-                <code>bun add openseadragon</code>
-                <button class="copy-btn" data-copy="bun add openseadragon" aria-label="Copy command">
+                <code>npm install openseadragon</code>
+                <button class="copy-btn" data-copy="npm install openseadragon" aria-label="Copy command">
                   <svg class="ic-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
                   <svg class="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4.5 4.5L19 6.5"/></svg>
                 </button>
@@ -73,7 +74,6 @@
                 <text x="700" y="424" text-anchor="end">zoom 1.00×</text>
               </g>
             </svg>
-            <div class="scanline" aria-hidden="true"></div>
             <div class="viewer-overlay">
               <div class="ovl-tl"><span class="chip"><span class="dot"></span>LIVE · drag, scroll, pinch</span></div>
               <div class="ovl-cr" style="width:48px;height:196px">
@@ -111,7 +111,7 @@
               <div>SOURCE<br/><b id="strip-source">{{ stripSource }}</b></div>
               <div>TILES<br/><b>tiled image pyramid</b></div>
               <div>MEMORY<br/><b>only visible tiles in RAM</b></div>
-              <div>RENDERER<br/><b>canvas2d · webgl optional</b></div>
+              <div>RENDERER<br/><b>canvas2D · WebGL</b></div>
             </div>
           </div>
         </div>

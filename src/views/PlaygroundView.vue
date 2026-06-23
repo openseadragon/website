@@ -207,6 +207,7 @@
         <!-- Footer -->
         <div class="pg-sidebar-foot">
           <button class="pg-reset-btn" @click="resetOpts">↺ Reset to defaults</button>
+          <p class="pg-disclaimer">This playground shows a subset of OSD's capabilities. See <RouterLink to="/examples">Examples</RouterLink> for the full range.</p>
         </div>
       </aside>
 
@@ -852,6 +853,13 @@ onUnmounted(() => {
   color: var(--paper-dim);
   background: var(--ink-2);
 }
+.pg-disclaimer {
+  margin: 10px 0 0;
+  font-size: 11px;
+  color: var(--paper-mute);
+  line-height: 1.5;
+}
+.pg-disclaimer a { color: var(--paper-dim); text-decoration: underline; }
 
 /* ── Main area ── */
 .pg-main {

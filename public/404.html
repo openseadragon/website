@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>OpenSeadragon</title>
+  <script>
+    // GitHub Pages SPA redirect: store the full URL and bounce to the base path.
+    // The main index.html restores the path via history.replaceState on load.
+    var base = '/new-website/';
+    var path = location.pathname.slice(base.length - 1) + location.search + location.hash;
+    sessionStorage.setItem('osd_spa_redirect', path);
+    location.replace(base);
+  </script>
+</head>
+<body></body>
+</html>

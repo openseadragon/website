@@ -90,6 +90,7 @@
                 <div class="plugin-card-name">{{ plugin.name }}</div>
                 <div class="plugin-card-cat">{{ plugin.cat }}</div>
               </div>
+              <span v-if="plugin.official" class="plugin-official">Official</span>
               <span
                 v-if="plugin.compat"
                 :class="['plugin-compat', plugin.compat === 'v5+' ? 'plugin-compat-modern' : 'plugin-compat-legacy']"
