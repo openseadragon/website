@@ -44,79 +44,83 @@
           </div>
         </div>
 
-        <!-- INTERACTIVE STAGE -->
-        <div class="hero-stage" id="hero-stage">
-          <div class="stage-chrome">
-            <div class="stage-dots"><span></span><span></span><span></span></div>
-            <span>viewer.html — <span style="color:var(--paper-dim);">live</span></span>
-            <div class="stage-meta">
-              <span><b id="src-name">{{ srcName }}</b></span>
-              <span>tiles loaded: <b>{{ tileCount }}</b></span>
-              <span>zoom: <b>{{ zoomReadout }}</b></span>
-            </div>
-          </div>
+      </div>
+    </header>
 
-          <div class="viewer-shell">
-            <div id="osd-hero" class="osd-mount"></div>
-            <svg class="viewer-wires" id="viewer-wires" aria-hidden="true" viewBox="0 0 800 450" preserveAspectRatio="none">
-              <g stroke="currentColor" fill="none" stroke-width="0.6" vector-effect="non-scaling-stroke">
-                <path d="M0 56 H800 M0 112 H800 M0 168 H800 M0 225 H800 M0 281 H800 M0 337 H800 M0 393 H800" class="wire-line"/>
-                <path d="M100 0 V450 M200 0 V450 M300 0 V450 M400 0 V450 M500 0 V450 M600 0 V450 M700 0 V450" class="wire-line"/>
-                <rect x="300" y="168" width="200" height="113" stroke-width="1.2" class="wire-focus"/>
-                <path d="M400 168 V281 M300 225 H500" stroke-dasharray="2 4" class="wire-cross"/>
-                <circle cx="400" cy="225" r="5" class="wire-dot" fill="currentColor"/>
-                <path d="M20 20 H50 M20 20 V50 M780 20 H750 M780 20 V50 M20 430 H50 M20 430 V400 M780 430 H750 M780 430 V400" stroke-width="1" class="wire-ticks"/>
-              </g>
-              <g class="wire-labels" font-family="ui-monospace, monospace" font-size="9" fill="currentColor" opacity="0.7">
-                <text x="28" y="34">L8 · 256²</text>
-                <text x="700" y="34" text-anchor="end">7026 × 9221</text>
-                <text x="28" y="424">tiles cached 0/—</text>
-                <text x="700" y="424" text-anchor="end">zoom 1.00×</text>
-              </g>
-            </svg>
-            <div class="viewer-overlay">
-              <div class="ovl-tl"><span class="chip"><span class="dot"></span>LIVE · drag, scroll, pinch</span></div>
-              <div class="ovl-cr" style="width:48px;height:196px">
-                <div class="zoom-controls" aria-label="Zoom controls" style="width:48px;border-width:1px;justify-content:flex-start">
-                  <button class="zc-btn zc-pri" id="zoom-in" aria-label="Zoom in">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                  </button>
-                  <div class="zc-rail-wrap" aria-hidden="true">
-                    <div class="zc-rail" id="zc-rail">
-                      <span class="zc-tick"></span><span class="zc-tick"></span><span class="zc-tick"></span><span class="zc-tick"></span><span class="zc-tick"></span>
-                      <span class="zc-fill" id="zc-fill"></span>
-                      <span class="zc-thumb" id="zc-thumb" tabindex="0" role="slider" aria-label="Zoom level" aria-valuemin="1" aria-valuemax="10" aria-valuenow="1">
-                        <span class="zc-thumb-label" id="zc-thumb-label">1.0×</span>
-                      </span>
-                    </div>
-                  </div>
-                  <button class="zc-btn zc-pri" id="zoom-out" aria-label="Zoom out">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/></svg>
-                  </button>
-                  <div class="zc-utils">
-                    <button class="zc-btn zc-sec" id="zoom-home" aria-label="Reset view">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="5" width="14" height="14" rx="2"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="ovl-bl"><div class="scale-bar"><span>200 px</span><span class="bar"></span></div></div>
-              <div class="ovl-bc"><span class="chip" id="hint-chip">SCROLL TO ZOOM · DOUBLE-CLICK TO DIVE</span></div>
-              <div class="ovl-br"><div class="navigator-mini"><span class="nav-label">Navigator</span><div id="osd-hero-navigator"></div></div></div>
-            </div>
+    <!-- CODE + LIVE -->
+    <section class="section-tight" data-screen-label="05 Code">
+      <div class="container">
+        <div class="section-head">
+          <div class="left">
+            <span class="eyebrow"><span class="dot"></span>SIX LINES</span>
+            <h2 class="h-section">Same code as the demo on the right.</h2>
+            <p class="sub">Drop one element. Point at a tile source. You're done. Everything else is opt-in.</p>
           </div>
+        </div>
+        <div class="split">
+          <div class="codeblock">
+            <header>
+              <div class="stage-dots"><span></span><span></span><span></span></div>
+              <span class="fname">viewer.html</span>
+              <span style="margin-left:auto;">esm · 18 kB</span>
+            </header>
+            <pre><span class="tok-com">// 1. include the script</span>
+<span class="tok-pun">&lt;</span><span class="tok-fn">script</span> <span class="tok-key">src</span><span class="tok-pun">=</span><span class="tok-str">"openseadragon.min.js"</span><span class="tok-pun">&gt;&lt;/</span><span class="tok-fn">script</span><span class="tok-pun">&gt;</span>
 
-          <div class="container" style="padding-bottom:28px;padding-top:22px;">
-            <div class="hero-strip">
-              <div>SOURCE<br/><b id="strip-source">{{ stripSource }}</b></div>
-              <div>TILES<br/><b>tiled image pyramid</b></div>
-              <div>MEMORY<br/><b>only visible tiles in RAM</b></div>
-              <div>RENDERER<br/><b>canvas2D · WebGL</b></div>
-            </div>
+<span class="tok-com">// 2. drop a container</span>
+<span class="tok-pun">&lt;</span><span class="tok-fn">div</span> <span class="tok-key">id</span><span class="tok-pun">=</span><span class="tok-str">"viewer"</span> <span class="tok-key">style</span><span class="tok-pun">=</span><span class="tok-str">"width:100%; height:600px"</span><span class="tok-pun">&gt;&lt;/</span><span class="tok-fn">div</span><span class="tok-pun">&gt;</span>
+
+<span class="tok-com">// 3. point at a tile source</span>
+<span class="tok-key">const</span> viewer <span class="tok-pun">=</span> <span class="tok-fn">OpenSeadragon</span><span class="tok-pun">({</span>
+  <span class="tok-key">id</span>: <span class="tok-str">"viewer"</span>,
+  <span class="tok-key">tileSources</span>: <span class="tok-str">"/tiles/painting.dzi"</span>,
+  <span class="tok-key">showNavigator</span>: <span class="tok-num">true</span>,
+  <span class="tok-key">zoomPerScroll</span>: <span class="tok-num">1.4</span>
+<span class="tok-pun">});</span></pre>
+          </div>
+          <div class="live-stage">
+            <div id="osd-secondary" class="osd-mount"></div>
           </div>
         </div>
       </div>
-    </header>
+    </section>
+
+    <!-- QUICK LINKS -->
+    <section class="section-tight" data-screen-label="02b Quick Links">
+      <div class="container">
+        <div class="quick-links">
+          <div class="ql-group">
+            <h3 class="ql-heading">Documentation</h3>
+            <ul class="ql-list">
+              <li><RouterLink to="/docs">Getting started</RouterLink></li>
+              <li><RouterLink to="/docs/tilesource-dzi">DZI tile source</RouterLink></li>
+              <li><RouterLink to="/docs/tilesource-iiif">IIIF tile source</RouterLink></li>
+              <li><RouterLink to="/docs/viewport-coordinates">Viewport &amp; coordinates</RouterLink></li>
+              <li><RouterLink to="/docs/ui-overlays">Overlays</RouterLink></li>
+              <li><RouterLink to="/docs/creating-zooming-images">Creating zooming images</RouterLink></li>
+            </ul>
+          </div>
+          <div class="ql-group">
+            <h3 class="ql-heading">Try it</h3>
+            <ul class="ql-list">
+              <li><RouterLink to="/examples">Examples gallery</RouterLink></li>
+              <li><RouterLink to="/playground">Live playground</RouterLink></li>
+              <li><RouterLink to="/demos">CodePen demos</RouterLink></li>
+              <li><RouterLink to="/in-the-wild">In the wild</RouterLink></li>
+            </ul>
+          </div>
+          <div class="ql-group">
+            <h3 class="ql-heading">Ecosystem</h3>
+            <ul class="ql-list">
+              <li><RouterLink to="/plugins">Plugin directory</RouterLink></li>
+              <li><RouterLink to="/docs/api/OpenSeadragon">API reference</RouterLink></li>
+              <li><RouterLink to="/docs/migration-v6">Migrating from v5</RouterLink></li>
+              <li><a href="https://github.com/openseadragon/openseadragon" target="_blank" rel="noopener noreferrer">GitHub →</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- USE CASES -->
     <section class="section" data-screen-label="03 Use cases">
@@ -215,44 +219,6 @@
       </div>
     </section>
 
-    <!-- CODE + LIVE -->
-    <section class="section-tight" data-screen-label="05 Code">
-      <div class="container">
-        <div class="section-head">
-          <div class="left">
-            <span class="eyebrow"><span class="dot"></span>SIX LINES</span>
-            <h2 class="h-section">Same code as the demo on the right.</h2>
-            <p class="sub">Drop one element. Point at a tile source. You're done. Everything else is opt-in.</p>
-          </div>
-        </div>
-        <div class="split">
-          <div class="codeblock">
-            <header>
-              <div class="stage-dots"><span></span><span></span><span></span></div>
-              <span class="fname">viewer.html</span>
-              <span style="margin-left:auto;">esm · 18 kB</span>
-            </header>
-            <pre><span class="tok-com">// 1. include the script</span>
-<span class="tok-pun">&lt;</span><span class="tok-fn">script</span> <span class="tok-key">src</span><span class="tok-pun">=</span><span class="tok-str">"openseadragon.min.js"</span><span class="tok-pun">&gt;&lt;/</span><span class="tok-fn">script</span><span class="tok-pun">&gt;</span>
-
-<span class="tok-com">// 2. drop a container</span>
-<span class="tok-pun">&lt;</span><span class="tok-fn">div</span> <span class="tok-key">id</span><span class="tok-pun">=</span><span class="tok-str">"viewer"</span> <span class="tok-key">style</span><span class="tok-pun">=</span><span class="tok-str">"width:100%; height:600px"</span><span class="tok-pun">&gt;&lt;/</span><span class="tok-fn">div</span><span class="tok-pun">&gt;</span>
-
-<span class="tok-com">// 3. point at a tile source</span>
-<span class="tok-key">const</span> viewer <span class="tok-pun">=</span> <span class="tok-fn">OpenSeadragon</span><span class="tok-pun">({</span>
-  <span class="tok-key">id</span>: <span class="tok-str">"viewer"</span>,
-  <span class="tok-key">tileSources</span>: <span class="tok-str">"/tiles/painting.dzi"</span>,
-  <span class="tok-key">showNavigator</span>: <span class="tok-num">true</span>,
-  <span class="tok-key">zoomPerScroll</span>: <span class="tok-num">1.4</span>
-<span class="tok-pun">});</span></pre>
-          </div>
-          <div class="live-stage">
-            <div id="osd-secondary" class="osd-mount"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- LEARN -->
     <section class="section-tight" id="learn" data-screen-label="05b Learn">
       <div class="container">
@@ -342,15 +308,15 @@
             <span class="pl-hub-title">openseadragon</span>
             <span class="pl-hub-sub">core viewer</span>
           </div>
-          <a class="pl-node" href="#"><span class="pl-mark">An</span><span class="pl-name">Annotorious</span></a>
-          <a class="pl-node" href="#"><span class="pl-mark">Sc</span><span class="pl-name">Scalebar</span></a>
-          <a class="pl-node" href="#"><span class="pl-mark">Fa</span><span class="pl-name">Fabric overlay</span></a>
-          <a class="pl-node" href="#"><span class="pl-mark">Sv</span><span class="pl-name">SVG overlay</span></a>
-          <a class="pl-node" href="#"><span class="pl-mark">Sh</span><span class="pl-name">Screenshot</span></a>
-          <a class="pl-node" href="#"><span class="pl-mark">Fi</span><span class="pl-name">Filtering</span></a>
-          <a class="pl-node" href="#"><span class="pl-mark">Le</span><span class="pl-name">Leaflet bridge</span></a>
-          <a class="pl-node" href="#"><span class="pl-mark">Ge</span><span class="pl-name">GeoJSON</span></a>
-          <a class="pl-node" href="#"><span class="pl-mark">Cu</span><span class="pl-name">Curtain</span></a>
+          <RouterLink class="pl-node" to="/plugins"><span class="pl-mark">An</span><span class="pl-name">Annotorious</span></RouterLink>
+          <RouterLink class="pl-node" to="/plugins"><span class="pl-mark">Sc</span><span class="pl-name">Scalebar</span></RouterLink>
+          <RouterLink class="pl-node" to="/plugins"><span class="pl-mark">Fa</span><span class="pl-name">Fabric overlay</span></RouterLink>
+          <RouterLink class="pl-node" to="/plugins"><span class="pl-mark">Sv</span><span class="pl-name">SVG overlay</span></RouterLink>
+          <RouterLink class="pl-node" to="/plugins"><span class="pl-mark">Sh</span><span class="pl-name">Screenshot</span></RouterLink>
+          <RouterLink class="pl-node" to="/plugins"><span class="pl-mark">Fi</span><span class="pl-name">Filtering</span></RouterLink>
+          <RouterLink class="pl-node" to="/plugins"><span class="pl-mark">Le</span><span class="pl-name">Leaflet bridge</span></RouterLink>
+          <RouterLink class="pl-node" to="/plugins"><span class="pl-mark">Ge</span><span class="pl-name">GeoJSON</span></RouterLink>
+          <RouterLink class="pl-node" to="/plugins"><span class="pl-mark">Cu</span><span class="pl-name">Curtain</span></RouterLink>
         </div>
       </div>
     </section>
@@ -366,10 +332,10 @@
           </div>
         </div>
         <div class="community">
-          <a class="community-card" href="#"><b>GitHub Discussions</b><p>Architecture questions, feature debate, and the long tail of release notes.</p><span class="more">github.com/openseadragon →</span></a>
-          <a class="community-card" href="#"><b>Stack Overflow</b><p>1,400+ tagged questions. Common gotchas already answered.</p><span class="more">tag · openseadragon →</span></a>
-          <a class="community-card" href="#"><b>Discord</b><p>Real-time chat with maintainers and users. IIIF interop, museum implementations, custom tile servers.</p><span class="more">join the server →</span></a>
-          <a class="community-card" href="#"><b>Sponsor</b><p>Underwrite maintainer time. Logo on the homepage, gratitude in the changelog.</p><span class="more">open collective →</span></a>
+          <a class="community-card" href="https://github.com/openseadragon/openseadragon/discussions" target="_blank" rel="noopener noreferrer"><b>GitHub Discussions</b><p>Architecture questions, feature debate, and the long tail of release notes.</p><span class="more">github.com/openseadragon →</span></a>
+          <a class="community-card" href="https://stackoverflow.com/questions/tagged/openseadragon" target="_blank" rel="noopener noreferrer"><b>Stack Overflow</b><p>1,400+ tagged questions. Common gotchas already answered.</p><span class="more">tag · openseadragon →</span></a>
+          <a class="community-card" href="https://github.com/openseadragon/openseadragon/discussions" target="_blank" rel="noopener noreferrer"><b>Discord</b><p>Real-time chat with maintainers and users. IIIF interop, museum implementations, custom tile servers.</p><span class="more">join the server →</span></a>
+          <a class="community-card" href="https://opencollective.com/openseadragon" target="_blank" rel="noopener noreferrer"><b>Sponsor</b><p>Underwrite maintainer time. Logo on the homepage, gratitude in the changelog.</p><span class="more">open collective →</span></a>
         </div>
       </div>
     </section>
@@ -382,13 +348,7 @@
     <TweaksPanel title="Tweaks">
       <div class="twk-sect">Theme</div>
       <TweakRadio label="Mode" v-model="tweaks.theme" :options="['dark', 'light']" />
-      <TweakColor label="Accent" v-model="tweaks.accent"
-        :options="[['#67d6ee','#0f1922','#f3fbfd'],['#ec8761','#180f0c','#fbf4f0'],['#c9ee5e','#0f1a08','#f6fbed'],['#b59afd','#120e1c','#f5f1fb']]"
-      />
-      <div class="twk-sect">Demo image</div>
-      <TweakRadio label="Use case" v-model="tweaks.frame" :options="['art', 'micro', 'maps']" />
-      <div class="twk-sect">Hero</div>
-      <TweakRadio label="Layout" v-model="tweaks.heroLayout" :options="['left', 'centered']" />
+      <TweakColor label="Accent" v-model="tweaks._accentArr" :options="ACCENT_OPTIONS" />
     </TweaksPanel>
   </div>
 </template>
@@ -407,20 +367,25 @@ import { useOSDVersion } from '../composables/useOSDVersion.js'
 import { CODEPENS } from '../data/codepens.js'
 import { yearsActive } from '../utils/osdMeta.js'
 
-// ── Reactive display state ──
-const activePen = ref(null)
-const tileCount = ref('—')
-const zoomReadout = ref('1.00×')
-const srcName = ref('Highsmith Archive · Library of Congress')
-const stripSource = ref('7,026 × 9,221 px · DZI pyramid')
+// ── Accent options ──
+const ACCENT_OPTIONS = [
+  ['#67d6ee','#0f1922','#f3fbfd'],
+  ['#ec8761','#180f0c','#fbf4f0'],
+  ['#c9ee5e','#0f1a08','#f6fbed'],
+  ['#b59afd','#120e1c','#f5f1fb']
+]
+const ACCENT_NAME_MAP = { '#67d6ee': 'aqua', '#ec8761': 'coral', '#c9ee5e': 'lime', '#b59afd': 'violet' }
 
-// ── Tweaks state ──
-const tweaks = reactive({ theme: 'dark', accent: 'aqua', frame: 'art', heroLayout: 'left' })
+// ── Reactive state ──
+const activePen = ref(null)
+const tweaks = reactive({ theme: 'dark', accent: 'aqua', _accentArr: ACCENT_OPTIONS[0] })
 
 watch(() => tweaks.theme, val => document.documentElement.setAttribute('data-theme', val))
-watch(() => tweaks.accent, val => document.documentElement.setAttribute('data-accent', val))
-watch(() => tweaks.heroLayout, val => document.body.classList.toggle('hero-centered', val === 'centered'))
-watch(() => tweaks.frame, val => { rebuildViewersForTheme(val) })
+watch(() => tweaks._accentArr, (v) => {
+  const name = ACCENT_NAME_MAP[v[0]] || 'aqua'
+  tweaks.accent = name
+  document.documentElement.setAttribute('data-accent', name)
+})
 
 // ── Composables ──
 const { tag, prefixUrl } = useOSDVersion()
@@ -429,17 +394,14 @@ useAnimations()
 useCopyButtons()
 
 // ── OSD viewer state ──
-let heroViewer = null
 let secondaryViewer = null
 let miniViewers = []
-let currentTheme = 'art'
 
 const DEMO_TILE_SOURCES = {
   art:   'https://openseadragon.github.io/example-images/highsmith/highsmith.dzi',
   micro: 'https://iiif.wellcomecollection.org/image/B0009508/info.json',
   maps:  'https://iiif.wellcomecollection.org/image/L0072917/info.json'
 }
-function getDemoTileSource(theme) { return DEMO_TILE_SOURCES[theme] || DEMO_TILE_SOURCES.art }
 
 function runTour(v) {
   const points = [
@@ -464,7 +426,7 @@ function initCaseViewer(mountId, theme) {
   const v = window.OpenSeadragon({
     element: mount,
     prefixUrl: prefixUrl.value,
-    tileSources: getDemoTileSource(theme),
+    tileSources: DEMO_TILE_SOURCES[theme] || DEMO_TILE_SOURCES.art,
     showNavigator: false, showNavigationControl: false, mouseNavEnabled: false,
     gestureSettingsMouse: { scrollToZoom: false, clickToZoom: false, dblClickToZoom: false, dragToPan: false, flickEnabled: false },
     gestureSettingsTouch: { scrollToZoom: false, clickToZoom: false, dblClickToZoom: false, dragToPan: false, flickEnabled: false },
@@ -482,98 +444,13 @@ function initCaseViewer(mountId, theme) {
   return v
 }
 
-function initHeroViewer() {
-  const mount = document.getElementById('osd-hero')
-  if (!mount || !window.OpenSeadragon) return
-  heroViewer = window.OpenSeadragon({
-    element: mount,
-    prefixUrl: prefixUrl.value,
-    tileSources: getDemoTileSource(currentTheme),
-    showNavigator: true, navigatorId: 'osd-hero-navigator',
-    navigatorBackground: '#1a1a1a', navigatorBorderColor: 'transparent', navigatorDisplayRegionColor: '#7adff5',
-    crossOriginPolicy: 'Anonymous',
-    showNavigationControl: false, showZoomControl: false, showHomeControl: false, showFullPageControl: false,
-    animationTime: 0.9, springStiffness: 6.5, blendTime: 0.1, immediateRender: false,
-    zoomPerScroll: 1.5, minZoomImageRatio: 0.7, maxZoomPixelRatio: 8, visibilityRatio: 0.7, constrainDuringPan: true,
-    gestureSettingsMouse: { scrollToZoom: true, clickToZoom: false, dblClickToZoom: true, flickEnabled: true },
-    background: '#000'
-  })
-  let tilesLoaded = 0
-  const zcThumb = document.getElementById('zc-thumb')
-  const zcThumbLabel = document.getElementById('zc-thumb-label')
-  const zcFill = document.getElementById('zc-fill')
-  const zcRailWrap = document.querySelector('.zc-rail-wrap')
-
-  function updateThumb() {
-    if (!heroViewer || !heroViewer.viewport) return
-    const z = heroViewer.viewport.getZoom(true)
-    const minZ = heroViewer.viewport.getMinZoom(), maxZ = heroViewer.viewport.getMaxZoom()
-    const t = Math.log(Math.max(z, minZ * 1.0001) / minZ) / Math.log(maxZ / minZ)
-    const tc = Math.max(0, Math.min(1, t))
-    if (zcThumb) { zcThumb.style.bottom = (tc * 100) + '%'; zcThumb.setAttribute('aria-valuenow', z.toFixed(2)) }
-    if (zcThumbLabel) zcThumbLabel.textContent = z.toFixed(1) + '×'
-    if (zcFill) zcFill.style.height = (tc * 100) + '%'
-  }
-
-  heroViewer.addHandler('open', () => {
-    heroViewer.viewport.zoomTo(2.6, null, true)
-    heroViewer.viewport.panTo(new window.OpenSeadragon.Point(0.45, 0.4), true)
-    const wires = document.getElementById('viewer-wires')
-    if (wires) { wires.classList.remove('show'); void wires.offsetWidth; wires.classList.add('show') }
-    updateThumb()
-    if (heroViewer.navigator) {
-      setTimeout(() => {
-        heroViewer.navigator.updateSize()
-        heroViewer.navigator.viewport.goHome(true)
-        heroViewer.navigator.update(heroViewer.viewport)
-      }, 150)
-    }
-  })
-  heroViewer.addHandler('zoom', () => { zoomReadout.value = heroViewer.viewport.getZoom(true).toFixed(2) + '×'; updateThumb() })
-  heroViewer.addHandler('tile-loaded', () => { tilesLoaded++; tileCount.value = tilesLoaded.toLocaleString() })
-
-  const zIn = document.getElementById('zoom-in'), zOut = document.getElementById('zoom-out')
-  const zHm = document.getElementById('zoom-home')
-  if (zIn)  zIn.addEventListener('click', () => heroViewer.viewport.zoomBy(1.5).applyConstraints())
-  if (zOut) zOut.addEventListener('click', () => heroViewer.viewport.zoomBy(1/1.5).applyConstraints())
-  if (zHm)  zHm.addEventListener('click', () => heroViewer.viewport.goHome())
-
-  if (zcThumb && zcRailWrap) {
-    const rail = zcRailWrap.querySelector('.zc-rail')
-    function setZoomFromClientY(clientY) {
-      const r = rail.getBoundingClientRect()
-      const tc = 1 - Math.max(0, Math.min(1, (clientY - r.top) / r.height))
-      const minZ = heroViewer.viewport.getMinZoom(), maxZ = heroViewer.viewport.getMaxZoom()
-      heroViewer.viewport.zoomTo(minZ * Math.pow(maxZ / minZ, tc), null, false)
-    }
-    let dragging = false
-    zcThumb.addEventListener('pointerdown', (e) => {
-      dragging = true; zcThumb.classList.add('dragging')
-      window.addEventListener('pointermove', onMove); window.addEventListener('pointerup', onUp); e.preventDefault()
-    })
-    function onMove(e) { if (!dragging) return; e.preventDefault(); setZoomFromClientY(e.clientY) }
-    function onUp() { if (!dragging) return; dragging = false; zcThumb.classList.remove('dragging'); window.removeEventListener('pointermove', onMove); window.removeEventListener('pointerup', onUp) }
-    zcRailWrap.addEventListener('click', (e) => { if (e.target === zcThumb || zcThumb.contains(e.target)) return; setZoomFromClientY(e.clientY) })
-    zcThumb.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowUp')   { heroViewer.viewport.zoomBy(1.2).applyConstraints(); e.preventDefault() }
-      if (e.key === 'ArrowDown') { heroViewer.viewport.zoomBy(1/1.2).applyConstraints(); e.preventDefault() }
-      if (e.key === 'Home')      { heroViewer.viewport.goHome(); e.preventDefault() }
-    })
-  }
-  const hint = document.getElementById('hint-chip')
-  if (hint) {
-    const dismiss = () => { hint.style.transition = 'opacity 400ms'; hint.style.opacity = '0'; setTimeout(() => hint.remove(), 500) }
-    heroViewer.addOnceHandler('canvas-drag', dismiss); heroViewer.addOnceHandler('canvas-scroll', dismiss)
-  }
-}
-
 function initSecondaryViewer() {
   const mount = document.getElementById('osd-secondary')
   if (!mount || !window.OpenSeadragon) return
   secondaryViewer = window.OpenSeadragon({
     element: mount,
     prefixUrl: prefixUrl.value,
-    tileSources: getDemoTileSource(currentTheme),
+    tileSources: DEMO_TILE_SOURCES.art,
     showNavigator: true, navigatorPosition: 'TOP_RIGHT', navigatorHeight: '60px', navigatorWidth: '100px',
     crossOriginPolicy: 'Anonymous',
     showNavigationControl: false, animationTime: 0.9, zoomPerScroll: 1.4, background: '#000',
@@ -591,18 +468,8 @@ function initSecondaryViewer() {
 }
 
 
-function rebuildViewersForTheme(theme) {
-  currentTheme = theme
-  if (heroViewer) { heroViewer.destroy(); heroViewer = null }
-  if (secondaryViewer) { secondaryViewer.destroy(); secondaryViewer = null }
-  initHeroViewer(); initSecondaryViewer()
-  if (theme === 'art')   { srcName.value = 'Highsmith Archive · Library of Congress'; stripSource.value = '7,026 × 9,221 px · DZI · 7 zoom levels' }
-  if (theme === 'micro') { srcName.value = 'Skin tissue · fluorescence microscopy (Wellcome)'; stripSource.value = '4,792 × 3,654 px · IIIF level 2 · 6 zoom levels' }
-  if (theme === 'maps')  { srcName.value = 'John Snow\'s Cholera Map, 1854 (Wellcome)'; stripSource.value = '4,757 × 4,418 px · IIIF level 2 · 7 zoom levels' }
-}
 
 onMounted(() => {
-  initHeroViewer()
   initSecondaryViewer()
   miniViewers.push(initCaseViewer('osd-case-art', 'art'))
   miniViewers.push(initCaseViewer('osd-case-micro', 'micro'))
@@ -610,10 +477,8 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (heroViewer) { heroViewer.destroy(); heroViewer = null }
   if (secondaryViewer) { secondaryViewer.destroy(); secondaryViewer = null }
   miniViewers.forEach(v => { if (v) v.destroy() })
   miniViewers = []
-  document.body.classList.remove('hero-centered')
 })
 </script>

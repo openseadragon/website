@@ -18,6 +18,7 @@ export const DOC_NAV = [
       { title: 'Zoomify', path: '/docs/tilesource-zoomify' },
       { title: 'TMS', path: '/docs/tilesource-tms' },
       { title: 'IIP', path: '/docs/tilesource-iip' },
+      { title: 'Iris', path: '/docs/tilesource-iris' },
       { title: 'Legacy', path: '/docs/tilesource-legacy' },
       { title: 'Custom', path: '/docs/tilesource-custom' },
       { title: 'Custom (advanced)', path: '/docs/tilesource-custom-advanced' },
@@ -616,6 +617,50 @@ viewer.addTiledImage({
     ],
   },
 
+  'tilesource-iris': {
+    title: 'Iris Tile Source',
+    category: 'Tile Sources',
+    lede: 'The Iris tile source connects OpenSeadragon to Iris-compatible servers — commonly used for digital pathology and other whole-slide imaging applications.',
+    sections: [
+      {
+        id: 'config',
+        heading: 'Configuration',
+        blocks: [
+          { type: 'p', html: 'Set <code>type</code> to <code>\'iris\'</code> and provide the <code>serverUrl</code> and <code>slideId</code>. OpenSeadragon fetches image metadata from the Iris API to determine dimensions, zoom levels, and tile layout.' },
+          {
+            type: 'code',
+            filename: 'main.js',
+            code: `OpenSeadragon({
+  id: 'viewer',
+  prefixUrl: '/openseadragon/images/',
+  tileSources: {
+    type:              'iris',
+    serverUrl:         'https://examples.restful.irisdigitalpathology.org',
+    slideId:           'cervix_2x_jpeg',
+    crossOriginPolicy: 'Anonymous'
+  }
+});`,
+          },
+        ],
+      },
+      {
+        id: 'params',
+        heading: 'Required parameters',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '<code>type</code> — must be <code>\'iris\'</code>',
+              '<code>serverUrl</code> — base URL of the Iris server (no trailing slash)',
+              '<code>slideId</code> — identifier of the image to load',
+            ],
+          },
+          { type: 'p', html: 'The Iris API exposes endpoints for image metadata and individual tile retrieval. OpenSeadragon handles both automatically once <code>serverUrl</code> and <code>slideId</code> are set.' },
+        ],
+      },
+    ],
+  },
+
   'tilesource-legacy': {
     title: 'Legacy Tile Source',
     category: 'Tile Sources',
@@ -707,18 +752,110 @@ OpenSeadragon.extend(OpenSeadragon.TileSource.prototype, MyTileSource.prototype)
   'tilesource-custom-advanced': {
     title: 'Custom Tile Source (Advanced)',
     category: 'Tile Sources',
-    lede: 'Beyond getTileUrl — custom data types, async tile loading, and full control over the render pipeline.',
+    lede: 'Beyond getTileUrl — full control over tile fetching, decoding, cache keys, and synthesized content. The foundation for custom data types, WebGL textures, and non-HTTP tile sources.',
     sections: [
       {
         id: 'overview',
         heading: 'What you can override',
         blocks: [
-          { type: 'p', html: '<code>getTileUrl</code> doesn\'t have to return a URL at all. By overriding methods like <code>downloadTileStart</code>, you gain full control over how tile data is fetched and decoded.' },
-          { type: 'p', html: 'This is the foundation for custom data types, WebGL textures sourced from non-image data, or tiles fetched from WebSockets.' },
+          { type: 'p', html: '<code>getTileUrl</code> returns a URL for the default HTTP fetch. Override <code>downloadTileStart</code> to replace the fetch entirely — tile data can be anything your pipeline understands.' },
+          {
+            type: 'ul',
+            items: [
+              '<code>getTileUrl</code> / <code>getTilePostData</code> / <code>getTileAjaxHeaders</code> — control the HTTP request',
+              '<code>downloadTileStart</code> — replace the fetch with any async data source',
+              '<code>downloadTileAbort</code> — cancel an in-flight fetch',
+              '<code>getTileHashKey</code> — custom cache key when the URL alone isn\'t unique',
+              '<code>hasTransparency</code> — tells OSD whether alpha blending is needed',
+            ],
+          },
           {
             type: 'callout',
             title: 'See also',
-            html: 'Read the <a href="#/docs/data-modifications" style="color:var(--accent)">Data Modifications</a> and <a href="#/docs/data-types" style="color:var(--accent)">Data Types</a> guides for the full pipeline.',
+            html: 'Read the <a href="/docs/data-modifications" style="color:var(--accent)">Data Modifications</a> and <a href="/docs/data-types" style="color:var(--accent)">Data Types</a> guides for the full pipeline.',
+          },
+        ],
+      },
+      {
+        id: 'download-tile',
+        heading: 'Custom fetching with downloadTileStart',
+        blocks: [
+          { type: 'p', html: 'Return data via <code>finish()</code>, passing the raw data and the type string OSD should store it as. Call <code>finish()</code> with an <code>Error</code> to signal failure.' },
+          {
+            type: 'code',
+            filename: 'my-tile-source.js',
+            code: `class MyTileSource extends OpenSeadragon.TileSource {
+  // ... supports(), configure(), getTileUrl() ...
+
+  downloadTileStart(context) {
+    const { src, postData, loadWithAjax, ajaxHeaders, crossOriginPolicy, callback, abort } = context;
+
+    const controller = new AbortController();
+    fetch(src, { signal: controller.signal, headers: ajaxHeaders })
+      .then(res => res.arrayBuffer())
+      .then(buf => {
+        // store as raw buffer; register a custom type to decode it later
+        callback({ data: buf, dataType: 'my-buffer' });
+      })
+      .catch(err => callback(err));
+
+    // Return an abort controller so OSD can cancel mid-flight
+    return { abort: () => controller.abort() };
+  }
+}`,
+          },
+        ],
+      },
+      {
+        id: 'synthesized',
+        heading: 'Synthesized tiles',
+        blocks: [
+          { type: 'p', html: 'Return a <code>context2d</code> drawn entirely in JavaScript — no network request needed. Useful for procedural overlays, fractals, or heatmap renderers.' },
+          {
+            type: 'code',
+            filename: 'fractal-source.js',
+            code: `class FractalTileSource extends OpenSeadragon.TileSource {
+  constructor(opts) {
+    super({ width: 1024, height: 1024, tileSize: 256, minLevel: 0, ...opts });
+  }
+
+  supports(data) { return data?.type === 'fractal'; }
+  configure(data) { return data; }
+  getTileUrl(level, x, y) { return \`fractal://\${level}/\${x}/\${y}\`; }
+
+  downloadTileStart(context) {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+
+    // draw something procedural
+    const imgData = ctx.createImageData(256, 256);
+    for (let i = 0; i < imgData.data.length; i += 4) {
+      imgData.data[i]   = Math.random() * 255; // R
+      imgData.data[i+1] = 0;                   // G
+      imgData.data[i+2] = Math.random() * 255; // B
+      imgData.data[i+3] = 255;                 // A
+    }
+    ctx.putImageData(imgData, 0, 0);
+
+    context.callback({ data: ctx, dataType: 'context2d' });
+  }
+}`,
+          },
+        ],
+      },
+      {
+        id: 'cache-key',
+        heading: 'Custom cache keys',
+        blocks: [
+          { type: 'p', html: 'When the tile URL doesn\'t uniquely identify the tile data (e.g., the same URL returns different content based on session state), override <code>getTileHashKey</code>.' },
+          {
+            type: 'code',
+            filename: 'my-tile-source.js',
+            code: `getTileHashKey(level, x, y, url, ajaxHeaders, postData) {
+  // include a session token in the cache key
+  return \`\${url}:::\${this.sessionId}:::\${level}-\${x}-\${y}\`;
+}`,
           },
         ],
       },
@@ -1138,8 +1275,20 @@ viewer.viewport.setRotation(90, true); // second arg = animate`,
   'ui-keyboard-navigation': {
     title: 'Keyboard Navigation',
     category: 'UI & Controls',
-    lede: 'OpenSeadragon ships with built-in keyboard controls. You can extend or override them for custom shortcuts.',
+    lede: 'OpenSeadragon ships with built-in keyboard controls for zoom, pan, rotation, and sequence navigation. You can extend or override them for custom shortcuts.',
     sections: [
+      {
+        id: 'focus',
+        heading: 'Enabling keyboard input',
+        blocks: [
+          { type: 'p', html: 'The viewer canvas must have focus before keyboard events are captured. Either click the viewer, or set focus programmatically:' },
+          {
+            type: 'code',
+            filename: 'main.js',
+            code: `document.querySelector('#viewer .openseadragon-canvas').focus();`,
+          },
+        ],
+      },
       {
         id: 'defaults',
         heading: 'Default keyboard shortcuts',
@@ -1147,13 +1296,18 @@ viewer.viewport.setRotation(90, true); // second arg = animate`,
           {
             type: 'ul',
             items: [
-              '<code>+</code> / <code>=</code> — zoom in',
-              '<code>-</code> — zoom out',
+              '<code>=</code> / <code>+</code> / <code>Shift+S</code> / <code>Shift+↓</code> — zoom in',
+              '<code>-</code> / <code>_</code> / <code>Shift+W</code> / <code>Shift+↑</code> — zoom out',
               '<code>0</code> — home (fit image to viewport)',
               '<code>W</code> / <code>↑</code> — pan up',
               '<code>S</code> / <code>↓</code> — pan down',
               '<code>A</code> / <code>←</code> — pan left',
               '<code>D</code> / <code>→</code> — pan right',
+              '<code>R</code> — rotate clockwise',
+              '<code>Shift+R</code> — rotate counterclockwise',
+              '<code>F</code> — flip horizontally',
+              '<code>J</code> — previous image (sequence mode)',
+              '<code>K</code> — next image (sequence mode)',
             ],
           },
         ],
@@ -1162,16 +1316,18 @@ viewer.viewport.setRotation(90, true); // second arg = animate`,
         id: 'custom',
         heading: 'Custom key bindings',
         blocks: [
-          { type: 'p', html: 'Override <code>keyHandler</code> on the viewer\'s <code>innerTracker</code> to add custom shortcuts.' },
+          { type: 'p', html: 'Override <code>keyHandler</code> on the viewer\'s <code>innerTracker</code> to intercept key events. Call the original handler to preserve built-in bindings.' },
           {
             type: 'code',
             filename: 'main.js',
-            code: `viewer.innerTracker.keyHandler = function(event) {
-  if (event.keyCode === 82) { // 'r' key
-    viewer.viewport.setRotation(
-      viewer.viewport.getRotation() + 90
-    );
+            code: `const original = viewer.innerTracker.keyHandler;
+
+viewer.innerTracker.keyHandler = function(event) {
+  if (event.keyCode === 70) { // 'f' — custom full-screen toggle
+    viewer.setFullScreen(!viewer.isFullPage());
+    return;
   }
+  original.call(this, event); // pass through to built-in bindings
 };`,
           },
         ],
@@ -1180,27 +1336,64 @@ viewer.viewport.setRotation(90, true); // second arg = animate`,
   },
 
   'ui-customize-tooltips': {
-    title: 'Customize Tooltips',
+    title: 'Customize Tooltips (i18n)',
     category: 'UI & Controls',
-    lede: 'Override the default tooltip strings on built-in buttons for localization or custom UX copy.',
+    lede: 'OpenSeadragon has a built-in string table for all UI labels and error messages. Override any string before initialization to localize the interface or change copy.',
     sections: [
       {
-        id: 'nav-images',
-        heading: 'NavImages configuration',
+        id: 'setstring',
+        heading: 'OpenSeadragon.setString()',
         blocks: [
-          { type: 'p', html: 'The <code>navImages</code> option lets you swap the button icons. Each entry has a <code>REST</code>, <code>GROUP</code>, <code>HOVER</code>, and <code>DOWN</code> state.' },
-          { type: 'p', html: 'To change tooltip text, set the <code>title</code> attribute on the generated button elements after init, or override them via CSS pseudo-elements.' },
+          { type: 'p', html: 'Call <code>OpenSeadragon.setString(key, value)</code> <em>before</em> creating the viewer. Keys use dot notation in the form <code>Category.Name</code>.' },
           {
             type: 'code',
             filename: 'main.js',
-            code: `const viewer = OpenSeadragon({ /* ... */ });
+            code: `// Localize to Thai — must be called before OpenSeadragon()
+OpenSeadragon.setString('Tooltips.Home',     'จัดรูปไว้กลางจอ');
+OpenSeadragon.setString('Tooltips.ZoomIn',   'ขยาย');
+OpenSeadragon.setString('Tooltips.ZoomOut',  'ย่อ');
+OpenSeadragon.setString('Tooltips.FullPage', 'เต็มจอ');
 
-// Override tooltip text after initialization
-viewer.buttons.buttons.forEach(function(button) {
-  if (button.tooltip === 'Zoom in') {
-    button.element.title = 'Agrandir';
-  }
-});`,
+const viewer = OpenSeadragon({ id: 'viewer', /* ... */ });`,
+          },
+        ],
+      },
+      {
+        id: 'tooltip-keys',
+        heading: 'Tooltip string keys',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '<code>Tooltips.FullPage</code> — full-screen toggle button',
+              '<code>Tooltips.Home</code> — home / fit-to-screen button',
+              '<code>Tooltips.ZoomIn</code> — zoom-in button',
+              '<code>Tooltips.ZoomOut</code> — zoom-out button',
+              '<code>Tooltips.NextPage</code> — next image in sequence',
+              '<code>Tooltips.PreviousPage</code> — previous image in sequence',
+              '<code>Tooltips.RotateLeft</code> — rotate counterclockwise',
+              '<code>Tooltips.RotateRight</code> — rotate clockwise',
+              '<code>Tooltips.Flip</code> — horizontal flip',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'error-keys',
+        heading: 'Error message keys',
+        blocks: [
+          { type: 'p', html: 'These strings appear in the viewer when loading fails or a format is unsupported:' },
+          {
+            type: 'ul',
+            items: [
+              '<code>Errors.Dzc</code> — Deep Zoom Collection loading error',
+              '<code>Errors.Dzi</code> — DZI loading error',
+              '<code>Errors.Xml</code> — XML parse error',
+              '<code>Errors.ImageFormat</code> — unsupported image format',
+              '<code>Errors.Security</code> — cross-origin security error',
+              '<code>Errors.Status</code> — HTTP status error (includes <code>%1</code> and <code>%2</code> placeholders for code and URL)',
+              '<code>Errors.OpenFailed</code> — generic open failure',
+            ],
           },
         ],
       },

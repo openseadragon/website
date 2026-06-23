@@ -853,6 +853,40 @@ body.hero-centered .lede { text-align: center; }
 .hero-strip > div { padding-right: 24px; }
 .hero-strip b { display: block; color: var(--paper); font-weight: 500; font-size: 14px; margin-top: 2px; }
 
+/* -------- quick links -------- */
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  padding: 8px 0 16px;
+}
+.ql-heading {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper-mute);
+  margin: 0 0 14px;
+}
+.ql-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.ql-list a {
+  font-size: 14px;
+  color: var(--paper-dim);
+  text-decoration: none;
+  transition: color 120ms;
+}
+.ql-list a:hover { color: var(--paper); }
+@media (max-width: 640px) {
+  .quick-links { grid-template-columns: 1fr; gap: 28px; }
+}
+
 /* -------- use cases -------- */
 .cases {
   display: grid;

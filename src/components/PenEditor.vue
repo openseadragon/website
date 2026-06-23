@@ -221,6 +221,7 @@ function onGlobalKeydown(e) {
 }
 
 function onMessage(e) {
+  if (e.source !== iframeEl.value?.contentWindow) return
   if (e.data === 'pe:escape') emit('close')
 }
 

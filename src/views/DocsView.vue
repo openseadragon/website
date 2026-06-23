@@ -33,7 +33,7 @@
           <!-- MAIN CONTENT -->
           <article class="doc-body" id="getting-started">
             <div class="crumbs">
-              <a href="#">Docs</a> <span>/</span> <a href="#">Getting started</a> <span>/</span>
+              <RouterLink to="/docs">Docs</RouterLink> <span>/</span> <RouterLink to="/docs">Getting started</RouterLink> <span>/</span>
               <span style="color:var(--paper-dim);">Quickstart</span>
             </div>
             <h1>Quickstart</h1>
@@ -49,8 +49,8 @@
                 <div class="stage-dots"><span></span><span></span><span></span></div>
                 <span class="fname">terminal</span>
               </header>
-              <pre><span class="tok-com"># bun</span>
-<span class="tok-pun">$</span> bun add openseadragon
+              <pre><span class="tok-com"># npm / yarn / bun / pnpm all work</span>
+<span class="tok-pun">$</span> npm install openseadragon
 
 <span class="tok-com"># or grab the CDN build</span>
 <span class="tok-pun">&lt;</span><span class="tok-fn">script</span> <span class="tok-key">src</span><span class="tok-pun">=</span><span class="tok-str">"https://cdn.jsdelivr.net/npm/openseadragon@6/build/openseadragon/openseadragon.min.js"</span><span class="tok-pun">&gt;&lt;/</span><span class="tok-fn">script</span><span class="tok-pun">&gt;</span></pre>
@@ -106,16 +106,16 @@ viewer.<span class="tok-fn">addHandler</span><span class="tok-pun">(</span><span
 
             <h2 id="next">4. Next steps</h2>
             <ul>
-              <li>Read the <a href="#" style="color:var(--accent);">Viewport &amp; coordinates</a> guide — it unlocks overlays.</li>
-              <li>Try <a href="#" style="color:var(--accent);">multi-image worlds</a> if you have more than one image.</li>
+              <li>Read the <RouterLink to="/docs/viewport-coordinates" style="color:var(--accent);">Viewport &amp; coordinates</RouterLink> guide — it unlocks overlays.</li>
+              <li>Try <RouterLink to="/docs/multi-image" style="color:var(--accent);">multi-image worlds</RouterLink> if you have more than one image.</li>
               <li>Browse the <RouterLink to="/examples" style="color:var(--accent);">examples gallery</RouterLink> for working starting points.</li>
-              <li>If your tile pyramid doesn't exist yet, see <a href="#" style="color:var(--accent);">Creating tiles</a>.</li>
+              <li>If your tile pyramid doesn't exist yet, see <RouterLink to="/docs/creating-zooming-images" style="color:var(--accent);">Creating tiles</RouterLink>.</li>
             </ul>
 
             <!-- API SECTION -->
             <h2 id="api" style="margin-top: 64px;">Viewer · selected API</h2>
             <p>The most-reached-for methods on the <code>Viewer</code> instance. Full reference under
-              <a href="#" style="color:var(--accent);">API → Viewer</a>.</p>
+              <RouterLink to="/docs/api/Viewer" style="color:var(--accent);">API → Viewer</RouterLink>.</p>
 
             <div class="api-table">
               <div class="api-row"><span>Name</span><span>Returns</span><span>Summary</span></div>
@@ -142,7 +142,7 @@ viewer.<span class="tok-fn">addHandler</span><span class="tok-pun">(</span><span
 
             <h2 id="migration" style="margin-top: 64px;">Migrating from v5</h2>
             <p>Most v4 code runs unchanged on v5. The breaking surface is small and scoped.
-              The full table is in the <a href="#" style="color:var(--accent);">v5 → v6 guide</a>.</p>
+              The full table is in the <RouterLink to="/docs/migration-v6" style="color:var(--accent);">v5 → v6 guide</RouterLink>.</p>
             <ul>
               <li>The default drawer is still <code>canvas</code>. Opt into <code>webgl</code> via <code>drawer: "webgl"</code>.</li>
               <li><code>useCanvas</code> was removed (it's been the default for a decade).</li>
@@ -152,7 +152,7 @@ viewer.<span class="tok-fn">addHandler</span><span class="tok-pun">(</span><span
 
             <div class="callout">
               <b>Upgrade in one minute</b>
-              <code>bun add openseadragon@latest</code> — your existing viewer config is
+              <code>npm install openseadragon@latest</code> — your existing viewer config is
               almost certainly fine. Read the migration page only if you wrote a custom drawer
               or a plugin that touches internal tile state.
             </div>
@@ -160,17 +160,17 @@ viewer.<span class="tok-fn">addHandler</span><span class="tok-pun">(</span><span
             <!-- WHAT'S NEW -->
             <h2 id="releases" style="margin-top: 64px;">Recent releases</h2>
             <div class="whatsnew">
-              <a href="#">
+              <a href="https://github.com/openseadragon/openseadragon/releases/latest" target="_blank" rel="noopener noreferrer">
                 <span class="v">{{ tag }} · latest</span>
                 <b>WebGL drawer, stable</b>
                 <p>Smoother filters and blend modes. Opt-in, drop-out — canvas remains the default.</p>
               </a>
-              <a href="#">
+              <a href="https://github.com/openseadragon/openseadragon/releases/tag/v5.0.0" target="_blank" rel="noopener noreferrer">
                 <span class="v">v5.0 · 8 months ago</span>
                 <b>Sequence-mode performance</b>
                 <p>Pre-fetch logic rewritten; transitions stay 60fps on long sequences.</p>
               </a>
-              <a href="#">
+              <a href="https://github.com/openseadragon/openseadragon/releases/tag/v4.1.0" target="_blank" rel="noopener noreferrer">
                 <span class="v">v4.1 · 18 months ago</span>
                 <b>New plugin lifecycle</b>
                 <p>Explicit <code>create / destroy</code>. SSR-friendly. Predictable on hot reload.</p>

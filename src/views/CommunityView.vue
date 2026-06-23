@@ -260,7 +260,7 @@
             <p class="sub">Logo on the homepage. Gratitude in the changelog. Sustained progress on the
               issues you care about.</p>
           </div>
-          <div class="right"><a href="#">Open Collective →</a></div>
+          <div class="right"><a href="https://opencollective.com/openseadragon" target="_blank" rel="noopener noreferrer">Open Collective →</a></div>
         </div>
 
         <div class="sponsor-tiers">
@@ -272,7 +272,7 @@
               <li>Sticker pack</li>
               <li>Quarterly maintainer update</li>
             </ul>
-            <div class="tier-cta"><a href="#" class="btn btn-ghost">Become a Supporter</a></div>
+            <div class="tier-cta"><a href="https://opencollective.com/openseadragon" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Become a Supporter</a></div>
           </div>
           <div class="sponsor-tier featured">
             <span class="tier-name">Institution</span>
@@ -283,7 +283,7 @@
               <li>One office-hours call / quarter</li>
               <li>Mention in release notes</li>
             </ul>
-            <div class="tier-cta"><a href="#" class="btn btn-primary">Sponsor as Institution</a></div>
+            <div class="tier-cta"><a href="https://opencollective.com/openseadragon" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Sponsor as Institution</a></div>
           </div>
           <div class="sponsor-tier">
             <span class="tier-name">Underwriter</span>
@@ -294,7 +294,7 @@
               <li>Custom feature scoping</li>
               <li>Direct line to maintainers</li>
             </ul>
-            <div class="tier-cta"><a href="#" class="btn btn-ghost">Get in touch</a></div>
+            <div class="tier-cta"><a href="https://github.com/openseadragon/openseadragon/discussions" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Get in touch</a></div>
           </div>
         </div>
       </div>
@@ -335,7 +335,8 @@ const ACCENT_NAME_MAP = { '#67d6ee': 'aqua', '#ec8761': 'coral', '#c9ee5e': 'lim
 const ACCENT_COLOR_MAP = { aqua: ACCENT_OPTIONS[0], coral: ACCENT_OPTIONS[1], lime: ACCENT_OPTIONS[2], violet: ACCENT_OPTIONS[3] }
 
 const html = document.documentElement
-const savedTheme = localStorage.getItem('osd-theme') || html.getAttribute('data-theme') || 'dark'
+let savedTheme; try { savedTheme = localStorage.getItem('osd-theme') } catch (_) {}
+savedTheme = savedTheme || html.getAttribute('data-theme') || 'dark'
 const savedAccent = html.getAttribute('data-accent') || 'aqua'
 
 const tweaks = reactive({

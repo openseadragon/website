@@ -106,7 +106,8 @@ const ACCENT_NAME_MAP = { '#67d6ee': 'aqua', '#ec8761': 'coral', '#c9ee5e': 'lim
 const ACCENT_COLOR_MAP = { aqua: ACCENT_OPTIONS[0], coral: ACCENT_OPTIONS[1], lime: ACCENT_OPTIONS[2], violet: ACCENT_OPTIONS[3] }
 
 const html = document.documentElement
-const savedTheme = localStorage.getItem('osd-theme') || html.getAttribute('data-theme') || 'dark'
+let savedTheme; try { savedTheme = localStorage.getItem('osd-theme') } catch (_) {}
+savedTheme = savedTheme || html.getAttribute('data-theme') || 'dark'
 const savedAccent = html.getAttribute('data-accent') || 'aqua'
 
 const tweaks = reactive({
