@@ -1,0 +1,29 @@
+# Claude
+.claude/settings.local.json
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Bun
+bun.lock
+
+# Local env
+.env
+.env.local
+.env.*.local
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
