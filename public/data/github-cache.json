@@ -1,6 +1,211 @@
 {
-  "generatedAt": null,
+  "generatedAt": "2026-07-02T16:51:13.358Z",
   "latestRelease": null,
-  "activity": { "commits": [], "releases": [], "issues": [] },
-  "plugins": {}
+  "activity": {
+    "commits": [],
+    "releases": [],
+    "issues": []
+  },
+  "plugins": {
+    "recogito/annotorious-openseadragon": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "Emigre/openseadragon-annotations": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "verrochi92/OSDMeasure": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "picturae/openseadragonselection": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "tuvia-r/openseadragon-select-plugin": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "openseadragon/svg-overlay": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "openseadragon/html-overlay": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "altert/OpenSeadragonCanvasOverlay": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "joshua-gould/OpenSeadragonCanvasOverlayHd": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "picturae/OpenSeadragonGuides": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "antonioxdias/OpenSeadragonHTMLelements": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "usnistgov/OpenSeadragonScalebar": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "eriksjolund/OpenSeadragonPaperjsOverlay": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "altert/OpenseadragonFabricjsOverlay": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "rssaini01/openseadragon-fabric-overlay": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "WT-SML/doodle": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "rssaini01/openseadragon-filters": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "usnistgov/OpenSeadragonFiltering": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "rationai/OpenSeadragonFiltering": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "thejohnhoffer/viaWebGL": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "rssaini01/openseadragon-capture": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "KTGLeiden/Openseadragon-screenshot": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "openseadragon/bookmark-url": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "harshalitalele/OpenSeadragonDraggableNavigator": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "picturae/OpenSeadragonMagnifier": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "picturae/openseadragonrgb": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "picturae/openSeadragonIiifEyes": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "openseadragon-imaging/openseadragon-imaginghelper": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "openseadragon-imaging/openseadragon-viewerinputhook": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "Pin0/openseadragon-justified-collection": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "MartinPluta/OpenSeadragonMultiRow": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "WasMachenSachen/openseadragon-opacity-slider": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "Deprecator16/OpenSeadragonSmartScrollZoom": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "picturae/OpenSeadragonZoomLevels": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "pearcetm/GeoTIFFTileSource": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "sundogbio/szi-tile-source": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "recogito/openseadragon-wmts": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "openseadragon/flex-render": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "Benomrans/openseadragon-icons": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    },
+    "peterthomet/openseadragon-flat-toolbar-icons": {
+      "stars": null,
+      "updatedAt": null,
+      "version": null
+    }
+  }
 }
