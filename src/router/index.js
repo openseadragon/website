@@ -1,30 +1,30 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
 
 // ── Legacy URL redirects (openseadragon.github.io old paths) ─────────────────
 const LEGACY_REDIRECTS = {
-  '/docs.html':         '/docs',
-  '/getting-started':   '/docs',
-  '/getting-started/':  '/docs',
-  '/help':              '/docs',
-  '/help/':             '/docs',
-  '/examples/':         '/examples',
-  '/plugins.html':      '/plugins',
-  '/api':               '/docs/api/OpenSeadragon',
-  '/api/':              '/docs/api/OpenSeadragon',
-  '/jsdoc':             '/docs/api/OpenSeadragon',
-  '/jsdoc/':            '/docs/api/OpenSeadragon',
-}
+  '/docs.html': '/docs',
+  '/getting-started': '/docs',
+  '/getting-started/': '/docs',
+  '/help': '/docs',
+  '/help/': '/docs',
+  '/examples/': '/examples',
+  '/plugins.html': '/plugins',
+  '/api': '/docs/api/OpenSeadragon',
+  '/api/': '/docs/api/OpenSeadragon',
+  '/jsdoc': '/docs/api/OpenSeadragon',
+  '/jsdoc/': '/docs/api/OpenSeadragon'
+};
 
 const LEGACY_EXTERNAL = {
-  '/license':   'https://github.com/openseadragon/openseadragon/blob/master/LICENSE.txt',
-  '/license/':  'https://github.com/openseadragon/openseadragon/blob/master/LICENSE.txt',
-}
+  '/license': 'https://github.com/openseadragon/openseadragon/blob/master/LICENSE.txt',
+  '/license/': 'https://github.com/openseadragon/openseadragon/blob/master/LICENSE.txt'
+};
 
 const routes = [
   {
     path: '/',
     component: () => import('../views/HomeView.vue'),
-    meta: { title: 'OSD — Deep zoom for the web' }
+    meta: { title: 'OpenSeadragon — Deep zoom for the web' }
   },
   {
     path: '/docs',
@@ -77,30 +77,36 @@ const routes = [
     component: () => import('../views/NotFoundView.vue'),
     meta: { title: 'Not Found — OpenSeadragon' }
   }
-]
+];
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior(to, from, savedPosition) {
-    if (to.hash) return { el: to.hash, behavior: 'smooth' }
-    if (savedPosition) return savedPosition
-    return { top: 0 }
+    if (to.hash) return { el: to.hash, behavior: 'smooth' };
+    if (savedPosition) return savedPosition;
+    return { top: 0 };
   }
-})
+});
 
 router.beforeEach((to, _from, next) => {
   // External legacy redirects
-  const ext = LEGACY_EXTERNAL[to.path]
-  if (ext) { window.location.replace(ext); return }
+  const ext = LEGACY_EXTERNAL[to.path];
+  if (ext) {
+    window.location.replace(ext);
+    return;
+  }
 
   // Internal legacy redirects
-  const leg = LEGACY_REDIRECTS[to.path]
-  if (leg) { next(leg); return }
+  const leg = LEGACY_REDIRECTS[to.path];
+  if (leg) {
+    next(leg);
+    return;
+  }
 
-  next()
-})
+  next();
+});
 
 router.afterEach((to) => {
-  document.title = to.meta.title || 'OpenSeadragon'
-})
+  document.title = to.meta.title || 'OpenSeadragon';
+});
