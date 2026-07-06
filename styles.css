@@ -2768,15 +2768,15 @@ body.hero-centered .lede { text-align: center; }
   align-items: center;
   justify-content: center;
   padding: 8px var(--pad);
-  background: oklch(0.3 0.02 60 / 0.7);
+  background: #f00;
   border-bottom: 1px solid oklch(0.45 0.06 60 / 0.5);
-  font-size: 13px;
+  font-size: 20px;
   line-height: 1.4;
   text-align: center;
 }
-.wip-text { color: var(--paper-dim); }
+.wip-text { color: #fff; }
 .wip-link {
-  color: var(--paper);
+  color: #fff;
   font-weight: 500;
   text-decoration: underline;
   text-underline-offset: 2px;
